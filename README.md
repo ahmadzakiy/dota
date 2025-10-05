@@ -1,8 +1,8 @@
-# Dota 2 Wrapped 🛡️
+# Dota Wrapped 🛡️
 
-A Dota 2 stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.
+A Dota stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/zakiy-project/dota-project-vz)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/zakiy-project/dota)
 [![Built with Next.js](https://img.shields.io/badge/Built%20with-Next.js-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -42,7 +42,7 @@ A Dota 2 stats app that'll tell you exactly how many hours you've wasted feeding
 - Searchable and sortable statistical breakdowns
 
 #### 🔗 Social Sharing
-- Share your Dota 2 wrapped results with friends
+- Share your Dota wrapped results with friends
 - Social media integration for showcasing achievements
 - Shareable profile links and statistics summaries
 
@@ -82,7 +82,7 @@ A Dota 2 stats app that'll tell you exactly how many hours you've wasted feeding
 
 1. **Enter your Steam ID**: Input your Steam ID on the homepage
 2. **Generate Wrapped**: Click "Generate my wrapped" to fetch your statistics
-3. **Explore Your Data**: Navigate through different sections to view your Dota 2 performance
+3. **Explore Your Data**: Navigate through different sections to view your Dota performance
 4. **Share Results**: Use the social sharing features to share your achievements
 
 ## 🛠️ Tech Stack
@@ -91,7 +91,7 @@ A Dota 2 stats app that'll tell you exactly how many hours you've wasted feeding
 - **Language**: [TypeScript](https://www.typescriptlang.org/) for type safety
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom CSS animations
 - **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives
-- **Data Source**: [OpenDota API](https://docs.opendota.com/) for Dota 2 statistics
+- **Data Source**: [OpenDota API](https://docs.opendota.com/) for Dota statistics
 - **Code Quality**: [Biome](https://biomejs.dev/) for formatting and linting
 - **Package Manager**: [pnpm](https://pnpm.io/) for faster installs
 - **Deployment**: [Vercel](https://vercel.com/) for hosting
@@ -171,10 +171,10 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- [OpenDota](https://www.opendota.com/) for providing the comprehensive Dota 2 API
-- [Valve Corporation](https://www.valvesoftware.com/) for creating Dota 2
+- [OpenDota](https://www.opendota.com/) for providing the comprehensive Dota API
+- [Valve Corporation](https://www.valvesoftware.com/) for creating Dota
 - [Radix UI](https://www.radix-ui.com/) for accessible component primitives
-- The Dota 2 community for inspiration and feedback
+- The Dota community for inspiration and feedback
 
 ## 🐛 Bug Reports & Feature Requests
 
@@ -187,7 +187,7 @@ If you encounter any issues or have suggestions for improvements, please:
 
 ## 📊 API Information
 
-This application uses the [OpenDota API](https://docs.opendota.com/) to fetch Dota 2 player statistics. Please note:
+This application uses the [OpenDota API](https://docs.opendota.com/) to fetch Dota player statistics. Please note:
 
 - Your Steam profile must be public to access statistics
 - Data may take time to appear for new accounts

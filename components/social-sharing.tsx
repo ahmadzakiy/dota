@@ -34,16 +34,16 @@ export function SocialSharing({ data }: SocialSharingProps) {
     const kills = getTotalValue(data.totals, "kills")
     const deaths = getTotalValue(data.totals, "deaths")
     const assists = getTotalValue(data.totals, "assists")
-    const wrappedUrl = window?.location?.origin
+    const wrappedUrl = window?.location?.href
 
-    return `🎮 My Dota 2 Wrapped! 🎮
+    return `🎮 My Dota Wrapped! 🎮
 
 👤 ${playerName}
 📅 Playing Dota since ${firstMatchDate}
 🏆 ${winRate}% Win Rate (${data.totalMatches} matches)
 ⚔️ K/D/A: ${kills}/${deaths}/${assists}
 
-Check your own Dota 2 Wrapped at: ${wrappedUrl}
+Check your own Dota Wrapped at: ${wrappedUrl}
 
 #Dota2Wrapped #Dota2 #Gaben #IceFrog`
   }
@@ -74,7 +74,7 @@ Check your own Dota 2 Wrapped at: ${wrappedUrl}
   return (
     <Card className="relative bg-card/80 backdrop-blur-md">
       <CardHeader>
-        <CardTitle>Share Your Dota 2 Wrapped</CardTitle>
+        <CardTitle>Share Your Dota Wrapped</CardTitle>
         <CardDescription>
           Brag about your feeding skills and convince your friends they're worse than you!
         </CardDescription>

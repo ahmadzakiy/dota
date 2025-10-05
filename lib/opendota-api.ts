@@ -1,6 +1,4 @@
 import {
-  getHeroAttributeColor as getHeroAttributeColorFromHeroes,
-  getHeroAttributeIcon as getHeroAttributeIconFromHeroes,
   getHeroAvatar as getHeroAvatarFromHeroes,
   getHeroName as getHeroNameFromHeroes,
 } from "./heroes"
@@ -8,81 +6,10 @@ import {
 import type { HeroStats, Match, Peer, Player, PlayerRank, WinLoss, WrappedData } from "./types"
 
 // Additional type definitions for API responses
-type PlayerRating = {
-  account_id: number
-  competitive_rank?: number
-  solo_competitive_rank?: number
-  time: string
-}
-
-type PlayerRanking = {
-  hero_id: number
-  score: number
-  percent_rank: number
-  card: number
-}
-
 type PlayerTotal = {
   field: string
   n: number
   sum: number
-}
-
-type WardMapData = {
-  obs: Record<string, number>
-  sen: Record<string, number>
-}
-
-type PlayerHistogram = {
-  x: number
-  games: number
-  win: number
-}
-
-type RefreshResponse = {
-  success: boolean
-  message?: string
-}
-
-type SearchPlayer = {
-  account_id: number
-  avatarfull: string
-  personaname: string
-  last_match_time?: string
-}
-
-type MatchDetails = {
-  match_id: number
-  barracks_status_dire: number
-  barracks_status_radiant: number
-  cluster: number
-  dire_score: number
-  duration: number
-  engine: number
-  first_blood_time: number
-  game_mode: number
-  human_players: number
-  leagueid: number
-  lobby_type: number
-  match_seq_num: number
-  negative_votes: number
-  objectives: unknown[]
-  picks_bans: unknown[]
-  positive_votes: number
-  radiant_gold_adv: number[]
-  radiant_score: number
-  radiant_win: boolean
-  radiant_xp_adv: number[]
-  skill: number
-  start_time: number
-  teamfights: unknown[]
-  tower_status_dire: number
-  tower_status_radiant: number
-  version: number
-  replay_salt: number
-  series_id: number
-  series_type: number
-  players: unknown[]
 }
 
 const OPENDOTA_BASE_URL = "https://api.opendota.com/api"
@@ -112,11 +39,6 @@ const MATCH_SEARCH_OFFSETS = [
   FINAL_OFFSET,
 ]
 
-// Date constants
-const DOTA2_BETA_YEAR = 2011
-const DOTA2_BETA_MONTH = 6
-const DOTA2_BETA_DAY = 1
-
 // Match limits
 const MATCH_LIMIT_SINGLE = 1
 const MATCH_LIMIT_BATCH = 100
@@ -128,7 +50,7 @@ const MATCH_LIMIT_DISPLAY = 5
 // Time conversion
 const MILLISECONDS_PER_SECOND = 1000
 
-// Dota 2 player slot constants
+// Dota player slot constants
 const RADIANT_PLAYER_SLOT_THRESHOLD = 128
 
 export class OpenDotaAPI {
@@ -155,7 +77,7 @@ export class OpenDotaAPI {
           if (response.status === HTTP_NOT_FOUND) {
             throw new Error(`Player not found. This could mean:
             1. The account ID doesn't exist in OpenDota's database
-            2. The player has never played Dota 2
+            2. The player has never played Dota
             3. The profile is private or hasn't been tracked by OpenDota
             
             Try visiting https://www.opendota.com/players/${url.split("/").pop()} to see if the profile exists.`)
@@ -222,56 +144,10 @@ export class OpenDotaAPI {
     return this.fetchWithRetry(url)
   }
 
-  getPlayerRatings(steamId: string): Promise<PlayerRating[]> {
-    const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/ratings`
-    return this.fetchWithRetry<PlayerRating[]>(url)
-  }
-
-  getPlayerRankings(steamId: string): Promise<PlayerRanking[]> {
-    const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/rankings`
-    return this.fetchWithRetry<PlayerRanking[]>(url)
-  }
-
   getPlayerTotals(steamId: string): Promise<PlayerTotal[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/totals`
     return this.fetchWithRetry<PlayerTotal[]>(url)
-  }
-
-  getPlayerWardMap(steamId: string): Promise<WardMapData> {
-    const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/wardmap`
-    return this.fetchWithRetry<WardMapData>(url)
-  }
-
-  getPlayerHistograms(steamId: string, field: string): Promise<PlayerHistogram[]> {
-    const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/histograms/${field}`
-    return this.fetchWithRetry<PlayerHistogram[]>(url)
-  }
-
-  async refreshPlayerData(steamId: string): Promise<RefreshResponse> {
-    const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/refresh`
-    const response = await fetch(url, { method: "POST" })
-
-    if (!response.ok) {
-      throw new Error(`Failed to refresh player data: ${response.status} - ${response.statusText}`)
-    }
-
-    return response.json()
-  }
-
-  searchPlayers(query: string): Promise<SearchPlayer[]> {
-    const url = `${OPENDOTA_BASE_URL}/search?q=${encodeURIComponent(query)}`
-    return this.fetchWithRetry<SearchPlayer[]>(url)
-  }
-
-  getMatch(matchId: string | number): Promise<MatchDetails> {
-    const url = `${OPENDOTA_BASE_URL}/matches/${matchId}`
-    return this.fetchWithRetry<MatchDetails>(url)
   }
 
   getPlayerRecentMatches(steamId: string): Promise<Match[]> {
@@ -363,21 +239,6 @@ export class OpenDotaAPI {
     return
   }
 
-  async getPlayerProfileDate(steamId: string): Promise<Date | undefined> {
-    try {
-      const player = await this.getPlayer(steamId)
-      // Some players have profile creation date in their data
-      if (player.profile?.profileurl) {
-        // Extract Steam ID from profile URL and estimate account creation
-        // This is an approximation but better than nothing
-        return new Date(DOTA2_BETA_YEAR, DOTA2_BETA_MONTH, DOTA2_BETA_DAY) // Dota 2 beta started around July 2011
-      }
-    } catch (_error) {
-      // Intentionally ignore errors in fallback account date estimation
-    }
-    return
-  }
-
   async getPlayerRank(steamId: string): Promise<PlayerRank | undefined> {
     try {
       const accountId = this.convertSteamIdToAccountId(steamId)
@@ -403,7 +264,7 @@ export class OpenDotaAPI {
         Please try:
         1. Visit https://www.opendota.com/players/${accountId} to check if your profile exists
         2. Make sure your Steam profile is public
-        3. Play a few Dota 2 matches to get tracked by OpenDota
+        3. Play a few Dota matches to get tracked by OpenDota
         4. Try using a different Steam ID format
         
         Example working account ID: 111620041 (you can test with this)`)
@@ -493,17 +354,9 @@ export const openDotaAPI = new OpenDotaAPI()
 
 // Re-export utility functions from heroes.ts for backward compatibility
 export const getHeroName = getHeroNameFromHeroes
-export const getHeroAttributeColor = getHeroAttributeColorFromHeroes
-export const getHeroAttributeIcon = getHeroAttributeIconFromHeroes
 export const getHeroAvatar = getHeroAvatarFromHeroes
 
 // Utility functions
-export function formatDuration(seconds: number): string {
-  const minutes = Math.floor(seconds / 60)
-  const remainingSeconds = seconds % 60
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
-}
-
 export function formatDate(timestamp: number): string {
   return new Date(timestamp * MILLISECONDS_PER_SECOND).toLocaleDateString()
 }

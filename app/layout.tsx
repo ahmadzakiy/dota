@@ -24,8 +24,8 @@ const bodoniModa = Bodoni_Moda({
 
 export const metadata: Metadata = {
   title: "Dota Wrapped",
-  description: "Discover your epic journey through the battlefield",
-  generator: "v0.app",
+  description:
+    "A Dota stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.",
 }
 
 export default function RootLayout({

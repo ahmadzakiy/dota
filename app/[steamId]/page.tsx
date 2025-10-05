@@ -60,7 +60,7 @@ export default function WrappedPage() {
             <CardTitle>
               <h1 className="text-3xl">Data not found</h1>
             </CardTitle>
-            <CardDescription>Unable to load your Dota 2 statistics</CardDescription>
+            <CardDescription>Unable to load your Dota statistics</CardDescription>
           </CardHeader>
           <CardFooter className="flex-col gap-2">
             <Button className="w-full" onClick={handleBack} variant="outline">
