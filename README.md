@@ -1,4 +1,4 @@
-# Dota Wrapped 🛡️
+# Dota Wrapped
 
 A Dota stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.
 
@@ -196,4 +196,4 @@ This application uses the [OpenDota API](https://docs.opendota.com/) to fetch Do
 
 ---
 
-**Defend the Ancient. Analyze the Performance. Share the Glory.** ⚔️
+**Defend the Ancient. Analyze the Performance. Share the Glory.**
