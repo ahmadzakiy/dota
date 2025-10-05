@@ -1,0 +1,47 @@
+import type { Metadata } from "next"
+import { Bodoni_Moda, Inter, Kode_Mono } from "next/font/google"
+import type React from "react"
+import { Toaster } from "@/components/ui/sonner"
+import "./globals.css"
+
+const kodeMono = Kode_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-kode-mono",
+})
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+})
+
+const bodoniModa = Bodoni_Moda({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-bodoni-moda",
+})
+
+export const metadata: Metadata = {
+  title: "Dota Wrapped",
+  description: "Discover your epic journey through the battlefield",
+  generator: "v0.app",
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html
+      className={`${kodeMono.variable} ${inter.variable} ${bodoniModa.variable} dark`}
+      lang="en"
+    >
+      <body className="min-h-screen bg-background font-sans text-foreground">
+        {children}
+        <Toaster position="top-center" richColors />
+      </body>
+    </html>
+  )
+}
