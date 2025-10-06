@@ -61,10 +61,10 @@ export default function HomePage() {
           fifth: "255, 255, 255",
           sixth: "192, 46, 26",
         }}
-        interactive={true}
+        interactive={false}
       />
       {/* Main Form Card */}
-      <Card className="relative z-1 w-full max-w-sm bg-background/60 text-center shadow-2xl backdrop-blur-md">
+      <Card className="relative z-1 w-full max-w-[300px] bg-background/60 text-center shadow-2xl backdrop-blur-md sm:max-w-sm">
         <CardHeader>
           <CardTitle>
             <h1 className="text-3xl">Dota Wrapped</h1>
