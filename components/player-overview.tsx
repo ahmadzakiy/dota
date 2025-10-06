@@ -166,7 +166,7 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
                   return "Top player"
                 }
                 if (winRateValue >= BASIC_PLAYER_THRESHOLD) {
-                  return "Basic player"
+                  return "Common player"
                 }
                 return "Goblin player"
               })()}

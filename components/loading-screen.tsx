@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble"
 import {
   Card,
   CardContent,
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { GradientAnimation } from "@/components/ui/gradient-animation"
 import { Footer } from "./footer"
 import { Button } from "./ui/button"
 import { Progress } from "./ui/progress"
@@ -63,17 +63,16 @@ export function LoadingScreen() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-      <BubbleBackground
-        className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-900 to-black"
-        colors={{
-          first: "192, 46, 26",
-          second: "192, 46, 26",
-          third: "192, 46, 26",
-          fourth: "192, 46, 26",
-          fifth: "255, 255, 255",
-          sixth: "192, 46, 26",
-        }}
+      <GradientAnimation
+        containerClassName="absolute inset-0"
+        fifthColor="192, 46, 26"
+        firstColor="192, 46, 26"
+        fourthColor="192, 46, 26"
+        gradientBackgroundEnd="rgb(0, 0, 0)"
+        gradientBackgroundStart="rgb(15, 23, 42)"
         interactive={true}
+        secondColor="192, 46, 26"
+        thirdColor="255, 255, 255"
       />
       <Card className="relative z-1 w-full max-w-sm bg-background/60 text-center shadow-2xl backdrop-blur-md">
         <CardHeader>

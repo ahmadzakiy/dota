@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { BubbleBackground } from "@/components/animate-ui/components/backgrounds/bubble"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { GradientAnimation } from "@/components/ui/gradient-animation"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { openDotaAPI } from "@/lib/opendota-api"
@@ -51,18 +51,18 @@ export default function HomePage() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
-      <BubbleBackground
-        className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-900 to-black"
-        colors={{
-          first: "192, 46, 26",
-          second: "192, 46, 26",
-          third: "192, 46, 26",
-          fourth: "192, 46, 26",
-          fifth: "255, 255, 255",
-          sixth: "192, 46, 26",
-        }}
-        interactive={false}
+      <GradientAnimation
+        containerClassName="absolute inset-0"
+        fifthColor="192, 46, 26"
+        firstColor="192, 46, 26"
+        fourthColor="192, 46, 26"
+        gradientBackgroundEnd="rgb(0, 0, 0)"
+        gradientBackgroundStart="rgb(15, 23, 42)"
+        interactive={true}
+        secondColor="192, 46, 26"
+        thirdColor="255, 255, 255"
       />
+
       {/* Main Form Card */}
       <Card className="relative z-1 w-full max-w-[300px] bg-background/60 text-center shadow-2xl backdrop-blur-md sm:max-w-sm">
         <CardHeader>

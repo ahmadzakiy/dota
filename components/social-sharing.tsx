@@ -36,16 +36,16 @@ export function SocialSharing({ data }: SocialSharingProps) {
     const assists = getTotalValue(data.totals, "assists")
     const wrappedUrl = window?.location?.href
 
-    return `🎮 My Dota Wrapped! 🎮
+    return `🐸 My Dota Wrapped!
 
-👤 ${playerName}
-📅 Playing Dota since ${firstMatchDate}
-🏆 ${winRate}% Win Rate (${data.totalMatches} matches)
-⚔️ K/D/A: ${kills}/${deaths}/${assists}
+  👤 ${playerName}
+  📅 Playing Dota since ${firstMatchDate}
+  🏆 ${winRate}% Win Rate (${data.totalMatches} matches)
+  🗡️ K/D/A: ${kills}/${deaths}/${assists}
 
-Check your own Dota Wrapped at: ${wrappedUrl}
+  Check your own Dota Wrapped at: ${wrappedUrl}
 
-#Dota2Wrapped #Dota2 #Gaben #IceFrog`
+  #Dota2Wrapped #Dota2 #Gaben #Icefrog`
   }
 
   const shareText = generateShareText()
