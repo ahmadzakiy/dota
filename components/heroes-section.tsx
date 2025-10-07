@@ -138,7 +138,7 @@ export function HeroesSection({ data }: HerosSectionProps) {
                       </div>
                       <div className="mt-1 text-muted-foreground text-xs">
                         <div className="flex justify-between">
-                          <span className="text-white">{hero.games} matches</span>
+                          <span className="text-foreground">{hero.games} matches</span>
                         </div>
                         <div className="mt-1 flex justify-between">
                           <span>

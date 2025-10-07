@@ -1,5 +1,4 @@
 "use client"
-import { Landmark } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -82,35 +81,24 @@ export default function WrappedPage() {
   }
 
   return (
-    <>
-      <div className="m-3 flex flex-col gap-6 bg-background md:m-6" id="dota-wrapped-result">
-        <div className="grid grid-cols-1 gap-4 rounded-2xl md:grid-cols-2 md:gap-6 xl:grid-cols-3">
-          <div className="order-2 md:order-1">
-            <FriendsSection data={wrappedData} />
-          </div>
-          <div className="order-1 md:order-2">
-            <PlayerOverview data={wrappedData} />
-          </div>
-          <div className="order-3 md:col-span-2 xl:col-span-1">
-            <HeroesSection data={wrappedData} />
-          </div>
+    <div className="m-3 flex flex-col gap-6 md:mx-6 md:mt-6 md:mb-16" id="dota-wrapped-result">
+      <div className="grid grid-cols-1 gap-6 rounded-2xl md:grid-cols-2 xl:grid-cols-3">
+        <div className="order-2 md:order-1">
+          <FriendsSection data={wrappedData} />
         </div>
-
-        <div className="flex flex-col gap-4 md:gap-6">
-          <RecentMatchesSection data={wrappedData} />
-          <TotalStatsSection data={wrappedData} />
-          <SocialSharing data={wrappedData} />
+        <div className="order-1 md:order-2">
+          <PlayerOverview data={wrappedData} />
+        </div>
+        <div className="order-3 md:col-span-2 xl:col-span-1">
+          <HeroesSection data={wrappedData} />
         </div>
       </div>
 
-      {/* Floating back to homepage button */}
-      <button
-        className="fixed right-6 bottom-6 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-primary p-3 shadow-2xl transition-transform hover:scale-120"
-        onClick={() => router.push("/")}
-        type="button"
-      >
-        <Landmark size={32} />
-      </button>
-    </>
+      <div className="flex flex-col gap-6">
+        <RecentMatchesSection data={wrappedData} />
+        <TotalStatsSection data={wrappedData} />
+        <SocialSharing data={wrappedData} />
+      </div>
+    </div>
   )
 }

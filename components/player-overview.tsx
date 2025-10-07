@@ -21,7 +21,6 @@ import {
   isWin,
 } from "@/lib/opendota-api"
 import type { WrappedData } from "@/lib/types"
-import { BackgroundGradient } from "./ui/background-gradient"
 
 const PERCENTAGE_MULTIPLIER = 100
 const HIGH_WIN_RATE_THRESHOLD = 50
@@ -137,12 +136,10 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
             {data.player?.profile?.personaname}
           </CardTitle>
           <CardAction>
-            <BackgroundGradient containerClassName="rounded-full">
-              <Avatar className="size-10">
-                <AvatarImage src={data.player?.profile?.avatarfull} />
-                <AvatarFallback>{data.player?.profile?.personaname?.charAt(0)}</AvatarFallback>
-              </Avatar>
-            </BackgroundGradient>
+            <Avatar className="size-12 shadow-[0_0_20px_rgb(231,0,11),0_0_40px_rgb(231,0,11,0.6),0_0_60px_rgb(231,0,11,0.4),0_0_80px_rgb(231,0,11,0.2)]">
+              <AvatarImage src={data.player?.profile?.avatarfull} />
+              <AvatarFallback>{data.player?.profile?.personaname?.charAt(0)}</AvatarFallback>
+            </Avatar>
           </CardAction>
         </CardHeader>
         <CardContent className="text-sm">
@@ -164,8 +161,8 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
           <CardTitle
             className={`font-mono font-semibold @[250px]/card:text-3xl text-2xl tabular-nums ${
               Number.parseFloat(winRate) > HIGH_WIN_RATE_THRESHOLD
-                ? "text-green-400"
-                : "text-red-400"
+                ? "text-green-600 dark:text-green-400"
+                : "text-red-600 dark:text-red-400"
             }`}
           >
             {winRate}%
@@ -195,7 +192,7 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
           <CardTitle
             className={`font-semibold @[250px]/card:text-3xl text-2xl ${
               Math.floor((data.rank?.rank_tier || 0) / RANK_TIER_DIVISOR) === IMMORTAL_RANK_TIER
-                ? "text-amber-400"
+                ? "text-amber-600 dark:text-amber-400"
                 : ""
             }`}
           >
@@ -240,19 +237,19 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
                   <h4 className="text-center font-semibold text-sm">Kills / Deaths / Assists</h4>
                   <div className="grid grid-cols-3 gap-4 text-sm">
                     <div className="text-center">
-                      <div className="font-medium text-green-400">
+                      <div className="font-medium text-green-600 dark:text-green-400">
                         {getTotalValue(data.totals, "kills")}
                       </div>
                       <div className="text-muted-foreground text-xs">Kills</div>
                     </div>
                     <div className="text-center">
-                      <div className="font-medium text-red-400">
+                      <div className="font-medium text-red-600 dark:text-red-400">
                         {getTotalValue(data.totals, "deaths")}
                       </div>
                       <div className="text-muted-foreground text-xs">Deaths</div>
                     </div>
                     <div className="text-center">
-                      <div className="font-medium text-yellow-400">
+                      <div className="font-medium text-yellow-600 dark:text-yellow-400">
                         {getTotalValue(data.totals, "assists")}
                       </div>
                       <div className="text-muted-foreground text-xs">Assists</div>

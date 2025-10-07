@@ -165,7 +165,7 @@ export function TotalStatsSection({ data }: TotalStatsSectionProps) {
   const filteredStats = getFilteredAndSortedStats()
 
   return (
-    <Card className="relative bg-card/80 backdrop-blur-md">
+    <Card className="relative bg-card backdrop-blur-md">
       <CardHeader>
         <CardTitle className="flex flex-col items-start justify-between gap-2 font-semibold text-2xl md:flex-row">
           Total Statistics
@@ -176,9 +176,7 @@ export function TotalStatsSection({ data }: TotalStatsSectionProps) {
             value={statSearchTerm}
           />
         </CardTitle>
-        <CardDescription>
-          Your Dota career summarized (the good, the bad, and the feeding)
-        </CardDescription>
+        <CardDescription>Your stats (the good, the bad, & the feeding)</CardDescription>
       </CardHeader>
       <CardContent>
         {filteredStats.length > 0 ? (

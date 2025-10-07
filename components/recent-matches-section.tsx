@@ -101,7 +101,7 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
   const filteredMatches = getFilteredAndSortedMatches()
 
   return (
-    <Card className="relative bg-card/80 backdrop-blur-md">
+    <Card className="relative bg-card backdrop-blur-md">
       <CardHeader>
         <CardTitle className="flex flex-col items-start justify-between gap-2 font-semibold text-2xl md:flex-row">
           Recent Matches
@@ -112,7 +112,7 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
             value={matchSearchTerm}
           />
         </CardTitle>
-        <CardDescription>Your questionable life choices in sortable form</CardDescription>
+        <CardDescription>Your questionable life choices</CardDescription>
       </CardHeader>
       <CardContent>
         {filteredMatches.length > 0 ? (
@@ -286,19 +286,19 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
                         <span className="truncate text-xs">{getHeroName(match.hero_id)}</span>
                       </TableCell>
                       <TableCell className="font-mono text-xs">{duration}</TableCell>
-                      <TableCell className="font-mono text-green-400 text-xs">
+                      <TableCell className="font-mono text-green-600 text-xs dark:text-green-400">
                         {match.kills}
                       </TableCell>
-                      <TableCell className="font-mono text-red-400 text-xs">
+                      <TableCell className="font-mono text-red-600 text-xs dark:text-red-400">
                         {match.deaths}
                       </TableCell>
-                      <TableCell className="font-mono text-blue-400 text-xs">
+                      <TableCell className="font-mono text-blue-600 text-xs dark:text-blue-400">
                         {match.assists}
                       </TableCell>
-                      <TableCell className="font-mono text-xs text-yellow-400">
+                      <TableCell className="font-mono text-xs text-yellow-600 dark:text-yellow-400">
                         {match.gold_per_min}
                       </TableCell>
-                      <TableCell className="font-mono text-purple-400 text-xs">
+                      <TableCell className="font-mono text-purple-600 text-xs dark:text-purple-400">
                         {match.xp_per_min}
                       </TableCell>
                       <TableCell className="font-mono text-xs">{match.last_hits}</TableCell>

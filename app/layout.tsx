@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import { Bodoni_Moda, Inter, Kode_Mono } from "next/font/google"
 import type React from "react"
+import { ThemeProvider } from "@/components/theme-provider"
+import { ThemedFloatingDock } from "@/components/themed-floating-dock"
 import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 
@@ -38,9 +40,12 @@ export default function RootLayout({
       className={`${kodeMono.variable} ${inter.variable} ${bodoniModa.variable} dark`}
       lang="en"
     >
-      <body className="min-h-screen bg-background font-sans text-foreground">
-        {children}
-        <Toaster position="top-center" richColors />
+      <body className="min-h-screen bg-neutral-800 font-sans text-foreground">
+        <ThemeProvider defaultTheme="dark">
+          {children}
+          <ThemedFloatingDock />
+          <Toaster position="top-center" richColors />
+        </ThemeProvider>
       </body>
     </html>
   )

@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ScrollArea } from "@/components/ui/scroll-area"
 import type { WrappedData } from "@/lib/types"
 
-const HIGH_WIN_RATE_THRESHOLD = 50
 const PERCENTAGE_MULTIPLIER = 100
 
 type FriendsSectionProps = {
@@ -55,7 +54,9 @@ export function FriendsSection({ data }: FriendsSectionProps) {
                         </div>
                         <div className="mt-1 text-muted-foreground text-xs">
                           <div className="flex justify-between">
-                            <span className="text-white">{gamesWithFriend} matches together</span>
+                            <span className="text-foreground">
+                              {gamesWithFriend} matches together
+                            </span>
                           </div>
                           <div className="mt-1 flex justify-between">
                             <span>
@@ -63,10 +64,10 @@ export function FriendsSection({ data }: FriendsSectionProps) {
                               <span>{lossesWithFriend} losses</span>
                             </span>
                             <span
-                              className={`font-mono tabular-nums ${
-                                Number.parseFloat(friendWinRate) > HIGH_WIN_RATE_THRESHOLD
-                                  ? "text-green-400"
-                                  : "text-red-400"
+                              className={`font-mono text-sm ${
+                                friend.win && friend.games
+                                  ? "text-green-500 dark:text-green-400"
+                                  : "text-red-500 dark:text-red-400"
                               }`}
                             >
                               {friendWinRate}%
