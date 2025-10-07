@@ -34,7 +34,7 @@ export function FriendsSection({ data }: FriendsSectionProps) {
                 const lossesWithFriend = friend.with_games - friend.with_win
 
                 return (
-                  <Link className="block" href={`/${friend.account_id}`} key={friend.account_id}>
+                  <Link className="block" href={`/id/${friend.account_id}`} key={friend.account_id}>
                     <div
                       className="flex cursor-pointer items-start space-x-3 rounded-lg border border-border/50 bg-muted/50 p-3 transition-colors hover:bg-muted/80"
                       id="friend-card"

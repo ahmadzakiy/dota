@@ -358,7 +358,11 @@ export const getHeroAvatar = getHeroAvatarFromHeroes
 
 // Utility functions
 export function formatDate(timestamp: number): string {
-  return new Date(timestamp * MILLISECONDS_PER_SECOND).toLocaleDateString()
+  return new Date(timestamp * MILLISECONDS_PER_SECOND).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  })
 }
 
 export function isWin(match: Match): boolean {

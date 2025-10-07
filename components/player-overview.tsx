@@ -21,11 +21,12 @@ import {
   isWin,
 } from "@/lib/opendota-api"
 import type { WrappedData } from "@/lib/types"
+import { BackgroundGradient } from "./ui/background-gradient"
 
 const PERCENTAGE_MULTIPLIER = 100
 const HIGH_WIN_RATE_THRESHOLD = 50
-const BASIC_PLAYER_THRESHOLD = 40
 const TOP_PLAYER_THRESHOLD = 55
+const BASIC_PLAYER_THRESHOLD = 45
 const MILLISECONDS_TO_SECONDS = 1000
 const HOURS_IN_DAY = 24
 const MINUTES_IN_HOUR = 60
@@ -101,6 +102,19 @@ const getTotalValue = (totals: { field: string; sum: number }[], field: string):
   return total ? total.sum : 0
 }
 
+// Helper function to get player badge based on win rate
+const getPlayerBadge = (
+  winRate: number,
+): { variant: "success" | "secondary" | "destructive"; label: string } => {
+  if (winRate >= TOP_PLAYER_THRESHOLD) {
+    return { variant: "success", label: "Top player" }
+  }
+  if (winRate >= BASIC_PLAYER_THRESHOLD) {
+    return { variant: "secondary", label: "Basic player" }
+  }
+  return { variant: "destructive", label: "Goblin player" }
+}
+
 type PlayerOverviewProps = {
   data: WrappedData
 }
@@ -123,10 +137,12 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
             {data.player?.profile?.personaname}
           </CardTitle>
           <CardAction>
-            <Avatar className="size-14">
-              <AvatarImage src={data.player?.profile?.avatarfull} />
-              <AvatarFallback>{data.player?.profile?.personaname?.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <BackgroundGradient containerClassName="rounded-full">
+              <Avatar className="size-10">
+                <AvatarImage src={data.player?.profile?.avatarfull} />
+                <AvatarFallback>{data.player?.profile?.personaname?.charAt(0)}</AvatarFallback>
+              </Avatar>
+            </BackgroundGradient>
           </CardAction>
         </CardHeader>
         <CardContent className="text-sm">
@@ -155,22 +171,10 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
             {winRate}%
           </CardTitle>
           <CardAction>
-            <Badge
-              variant={
-                Number.parseFloat(winRate) > HIGH_WIN_RATE_THRESHOLD ? "secondary" : "destructive"
-              }
-            >
-              {(() => {
-                const winRateValue = Number.parseFloat(winRate)
-                if (winRateValue >= TOP_PLAYER_THRESHOLD) {
-                  return "Top player"
-                }
-                if (winRateValue >= BASIC_PLAYER_THRESHOLD) {
-                  return "Common player"
-                }
-                return "Goblin player"
-              })()}
-            </Badge>
+            {(() => {
+              const badge = getPlayerBadge(Number.parseFloat(winRate))
+              return <Badge variant={badge.variant}>{badge.label}</Badge>
+            })()}
           </CardAction>
         </CardHeader>
         <CardContent className="text-sm">

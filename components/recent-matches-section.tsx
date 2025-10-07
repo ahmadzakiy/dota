@@ -12,11 +12,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { getHeroAvatar, getHeroName } from "@/lib/opendota-api"
+import { formatDate, getHeroAvatar, getHeroName } from "@/lib/opendota-api"
 import type { Match, WrappedData } from "@/lib/types"
 
 const PLAYER_SLOT_DIRE_THRESHOLD = 128
-const MILLISECONDS_IN_SECOND = 1000
 
 type RecentMatchesSectionProps = {
   data: WrappedData
@@ -265,9 +264,7 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
                   return (
                     <TableRow key={match.match_id}>
                       <TableCell className="font-mono text-xs">{match.match_id}</TableCell>
-                      <TableCell className="text-xs">
-                        {new Date(match.start_time * MILLISECONDS_IN_SECOND).toLocaleString()}
-                      </TableCell>
+                      <TableCell className="text-xs">{formatDate(match.start_time)}</TableCell>
                       <TableCell>
                         <Badge className="text-xs" variant={won ? "success" : "destructive"}>
                           {won ? "Win" : "Loss"}
@@ -286,7 +283,7 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
                           src={getHeroAvatar(match.hero_id)}
                           width={24}
                         />
-                        <span className="text-xs">{getHeroName(match.hero_id)}</span>
+                        <span className="truncate text-xs">{getHeroName(match.hero_id)}</span>
                       </TableCell>
                       <TableCell className="font-mono text-xs">{duration}</TableCell>
                       <TableCell className="font-mono text-green-400 text-xs">

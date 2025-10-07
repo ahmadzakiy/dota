@@ -42,7 +42,7 @@ export default function HomePage() {
         return
       }
 
-      router.push(`/${steamId.trim()}`)
+      router.push(`/id/${steamId.trim()}`)
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "An error occurred")
       setIsLoading(false)
@@ -58,13 +58,13 @@ export default function HomePage() {
         fourthColor="192, 46, 26"
         gradientBackgroundEnd="rgb(0, 0, 0)"
         gradientBackgroundStart="rgb(15, 23, 42)"
-        interactive={true}
+        interactive={false}
         secondColor="192, 46, 26"
         thirdColor="255, 255, 255"
       />
 
       {/* Main Form Card */}
-      <Card className="relative z-1 w-full max-w-[300px] bg-background/60 text-center shadow-2xl backdrop-blur-md sm:max-w-sm">
+      <Card className="relative z-1 w-full max-w-[350px] bg-background/60 text-center shadow-2xl backdrop-blur-md sm:max-w-sm">
         <CardHeader>
           <CardTitle>
             <h1 className="text-3xl">Dota Wrapped</h1>
@@ -74,7 +74,7 @@ export default function HomePage() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="steamId">Steam ID</Label>
+              <Label htmlFor="steamId">Steam ID, ex: 156606112</Label>
               <Input
                 disabled={isLoading}
                 id="steamId"
