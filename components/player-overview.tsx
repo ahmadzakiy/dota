@@ -136,7 +136,7 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
             {data.player?.profile?.personaname}
           </CardTitle>
           <CardAction>
-            <Avatar className="size-12 shadow-[0_0_20px_rgb(231,0,11),0_0_40px_rgb(231,0,11,0.6),0_0_60px_rgb(231,0,11,0.4),0_0_80px_rgb(231,0,11,0.2)]">
+            <Avatar className="size-12 shadow-[0_0_20px_rgb(231,0,11),0_0_40px_rgb(231,0,11,0.6),0_0_60px_rgb(231,0,11,0.4),0_0_80px_rgb(231,0,11,0.2)] ring-1 ring-primary/30">
               <AvatarImage src={data.player?.profile?.avatarfull} />
               <AvatarFallback>{data.player?.profile?.personaname?.charAt(0)}</AvatarFallback>
             </Avatar>

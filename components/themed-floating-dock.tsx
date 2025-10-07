@@ -10,6 +10,20 @@ const baseLinks = [
     icon: <House className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     href: "/",
   },
+  // {
+  //   title: "Go to amorfateh",
+  //   icon: (
+  //     // biome-ignore lint/performance/noImgElement: <should use img>
+  //     <img
+  //       alt="Aceternity Logo"
+  //       height={40}
+  //       src="/sijaki.png"
+  //       style={{ borderRadius: "50%" }}
+  //       width={40}
+  //     />
+  //   ),
+  //   href: "https://ahmadzakiy.com",
+  // },
 ]
 
 export function ThemedFloatingDock() {

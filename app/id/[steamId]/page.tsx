@@ -30,9 +30,8 @@ export default function WrappedPage() {
         setError(null)
 
         const data = await openDotaAPI.getPlayerWrappedData(steamId)
-
-        // biome-ignore lint/suspicious/noConsole: <log data for debugging>
-        console.log("WRAPPED DATA", data)
+        // const data = await DummyData
+        // console.log("WRAPPED DATA", data)
         setWrappedData(data)
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "An error occurred")

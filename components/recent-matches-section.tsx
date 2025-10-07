@@ -266,12 +266,12 @@ export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
                       <TableCell className="font-mono text-xs">{match.match_id}</TableCell>
                       <TableCell className="text-xs">{formatDate(match.start_time)}</TableCell>
                       <TableCell>
-                        <Badge className="text-xs" variant={won ? "success" : "destructive"}>
+                        <Badge className="text-xs" variant={won ? "success" : "default"}>
                           {won ? "Win" : "Loss"}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge className="text-xs" variant={isRadiant ? "secondary" : "default"}>
+                        <Badge className="text-xs" variant={isRadiant ? "secondary" : "outline"}>
                           {side}
                         </Badge>
                       </TableCell>

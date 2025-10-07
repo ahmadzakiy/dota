@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Bodoni_Moda, Inter, Kode_Mono } from "next/font/google"
 import type React from "react"
+import { GoogleAnalytics } from "@/components/google-analytics"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemedFloatingDock } from "@/components/themed-floating-dock"
 import { Toaster } from "@/components/ui/sonner"
@@ -41,6 +42,7 @@ export default function RootLayout({
       lang="en"
     >
       <body className="min-h-screen bg-neutral-800 font-sans text-foreground">
+        <GoogleAnalytics />
         <ThemeProvider defaultTheme="dark">
           {children}
           <ThemedFloatingDock />

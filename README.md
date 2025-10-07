@@ -172,7 +172,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - [OpenDota](https://www.opendota.com/) for providing the comprehensive Dota API
-- [Valve Corporation](https://www.valvesoftware.com/) for creating Dota
+- [Valve](https://www.valvesoftware.com/) for creating Dota
 - [Radix UI](https://www.radix-ui.com/) for accessible component primitives
 - The Dota community for inspiration and feedback
 

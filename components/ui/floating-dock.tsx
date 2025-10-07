@@ -12,6 +12,17 @@ import {
 import { useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 
+// Animation constants
+const ANIMATION_DELAY_STEP = 0.05
+const MOUSE_DISTANCE_RANGE = 150
+const CONTAINER_SIZE_MIN = 40
+const CONTAINER_SIZE_MAX = 80
+const ICON_SIZE_MIN = 20
+const ICON_SIZE_MAX = 40
+const SPRING_MASS = 0.1
+const SPRING_STIFFNESS = 150
+const SPRING_DAMPING = 12
+
 export const FloatingDock = ({
   items,
   desktopClassName,
@@ -55,12 +66,12 @@ const FloatingDockMobile = ({
                   opacity: 0,
                   y: 10,
                   transition: {
-                    delay: idx * 0.05,
+                    delay: idx * ANIMATION_DELAY_STEP,
                   },
                 }}
                 initial={{ opacity: 0, y: 10 }}
                 key={item.title}
-                transition={{ delay: (items.length - 1 - idx) * 0.05 }}
+                transition={{ delay: (items.length - 1 - idx) * ANIMATION_DELAY_STEP }}
               >
                 {item.onClick ? (
                   <button
@@ -141,32 +152,48 @@ function IconContainer({
     return val - bounds.x - bounds.width / 2
   })
 
-  const widthTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40])
-  const heightTransform = useTransform(distance, [-150, 0, 150], [40, 80, 40])
+  const widthTransform = useTransform(
+    distance,
+    [-MOUSE_DISTANCE_RANGE, 0, MOUSE_DISTANCE_RANGE],
+    [CONTAINER_SIZE_MIN, CONTAINER_SIZE_MAX, CONTAINER_SIZE_MIN],
+  )
+  const heightTransform = useTransform(
+    distance,
+    [-MOUSE_DISTANCE_RANGE, 0, MOUSE_DISTANCE_RANGE],
+    [CONTAINER_SIZE_MIN, CONTAINER_SIZE_MAX, CONTAINER_SIZE_MIN],
+  )
 
-  const widthTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20])
-  const heightTransformIcon = useTransform(distance, [-150, 0, 150], [20, 40, 20])
+  const widthTransformIcon = useTransform(
+    distance,
+    [-MOUSE_DISTANCE_RANGE, 0, MOUSE_DISTANCE_RANGE],
+    [ICON_SIZE_MIN, ICON_SIZE_MAX, ICON_SIZE_MIN],
+  )
+  const heightTransformIcon = useTransform(
+    distance,
+    [-MOUSE_DISTANCE_RANGE, 0, MOUSE_DISTANCE_RANGE],
+    [ICON_SIZE_MIN, ICON_SIZE_MAX, ICON_SIZE_MIN],
+  )
 
   const width = useSpring(widthTransform, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    mass: SPRING_MASS,
+    stiffness: SPRING_STIFFNESS,
+    damping: SPRING_DAMPING,
   })
   const height = useSpring(heightTransform, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    mass: SPRING_MASS,
+    stiffness: SPRING_STIFFNESS,
+    damping: SPRING_DAMPING,
   })
 
   const widthIcon = useSpring(widthTransformIcon, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    mass: SPRING_MASS,
+    stiffness: SPRING_STIFFNESS,
+    damping: SPRING_DAMPING,
   })
   const heightIcon = useSpring(heightTransformIcon, {
-    mass: 0.1,
-    stiffness: 150,
-    damping: 12,
+    mass: SPRING_MASS,
+    stiffness: SPRING_STIFFNESS,
+    damping: SPRING_DAMPING,
   })
 
   const [hovered, setHovered] = useState(false)
