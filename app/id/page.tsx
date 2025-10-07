@@ -106,7 +106,7 @@ export default function PlayersPage() {
                   <TableCell className="font-semibold">{friend.name}</TableCell>
                   <TableCell className="font-mono text-sm">{friend.id}</TableCell>
                   <TableCell className="text-right">
-                    <a href={`/${friend.id}`}>View Profile</a>
+                    <a href={`/id/${friend.id}`}>View Profile</a>
                   </TableCell>
                 </TableRow>
               ))}
@@ -139,7 +139,7 @@ export default function PlayersPage() {
                   <TableCell>{player.name}</TableCell>
                   <TableCell className="font-mono text-sm">{player.id}</TableCell>
                   <TableCell className="text-right">
-                    <a href={`/${player.id}`}>View Profile</a>
+                    <a href={`/id/${player.id}`}>View Profile</a>
                   </TableCell>
                 </TableRow>
               ))}
