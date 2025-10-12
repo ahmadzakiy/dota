@@ -65,7 +65,7 @@ export function FriendsSection({ data }: FriendsSectionProps) {
                             </span>
                             <span
                               className={`font-mono text-sm ${
-                                friend.win && friend.games
+                                Number(friendWinRate) > 50
                                   ? "text-green-500 dark:text-green-400"
                                   : "text-red-500 dark:text-red-400"
                               }`}
