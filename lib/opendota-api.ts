@@ -3,7 +3,17 @@ import {
   getHeroName as getHeroNameFromHeroes,
 } from "./heroes"
 
-import type { HeroStats, Match, Peer, Player, PlayerRank, WinLoss, WrappedData } from "./types"
+import type {
+  HeroStats,
+  Match,
+  Peer,
+  Player,
+  PlayerRank,
+  ProPlayer,
+  TopPlayer,
+  WinLoss,
+  WrappedData,
+} from "./types"
 
 // Additional type definitions for API responses
 type PlayerTotal = {
@@ -153,6 +163,16 @@ export class OpenDotaAPI {
   getPlayerRecentMatches(steamId: string): Promise<Match[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/recentMatches`
+    return this.fetchWithRetry(url)
+  }
+
+  getTopPlayers(): Promise<TopPlayer[]> {
+    const url = `${OPENDOTA_BASE_URL}/topPlayers`
+    return this.fetchWithRetry(url)
+  }
+
+  getProPlayers(): Promise<ProPlayer[]> {
+    const url = `${OPENDOTA_BASE_URL}/proPlayers`
     return this.fetchWithRetry(url)
   }
 

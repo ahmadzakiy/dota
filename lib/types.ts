@@ -96,6 +96,61 @@ export type PlayerStats = {
   plus?: boolean
 }
 
+export type TopPlayer = {
+  account_id: number
+  computed_mmr: number
+  steamid: string
+  avatar: string
+  avatarmedium: string
+  avatarfull: string
+  profileurl: string
+  personaname: string
+  last_login: string | null
+  full_history_time: string
+  cheese: number
+  fh_unavailable: boolean
+  loccountrycode: string
+  last_match_time: string
+  plus: boolean
+  name: string | null
+  country_code: string | null
+  fantasy_role: number | null
+  team_id: number | null
+  team_name: string | null
+  team_tag: string | null
+  is_locked: boolean | null
+  is_pro: boolean | null
+  locked_until: string | null
+  rating: number
+  rank_tier: number
+}
+
+export type ProPlayer = {
+  account_id: number
+  steamid: string | null
+  avatar: string | null
+  avatarmedium: string | null
+  avatarfull: string | null
+  profileurl: string | null
+  personaname: string | null
+  last_login: string | null
+  full_history_time: string | null
+  cheese: number | null
+  fh_unavailable: boolean | null
+  loccountrycode: string | null
+  last_match_time: string | null
+  plus: boolean | null
+  name: string | null
+  country_code: string | null
+  fantasy_role: number | null
+  team_id: number | null
+  team_name: string | null
+  team_tag: string | null
+  is_locked: boolean | null
+  is_pro: boolean | null
+  locked_until: string | null
+}
+
 export type WinLoss = {
   win: number
   lose: number
