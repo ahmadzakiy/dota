@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
@@ -103,6 +104,11 @@ export default function HomePage() {
               "Generate my wrapped"
             )}
           </Button>
+          <Link className="w-full" href={"/pro-players"}>
+            <Button className="w-full" variant="ghost">
+              Check pro players profile
+            </Button>
+          </Link>
         </CardFooter>
       </Card>
       <Footer />
