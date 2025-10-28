@@ -25,16 +25,17 @@ const LOADING_MESSAGES = [
   "Compiling your goblin's journey",
 ]
 
-const MESSAGE_INTERVAL_MS = 2000
-const PROGRESS_INTERVAL_MS = 500
-const MAX_PROGRESS_THRESHOLD = 95
-const PROGRESS_INCREMENT_MULTIPLIER = 15
+const MESSAGE_INTERVAL_MS = 1500
+const PROGRESS_INTERVAL_MS = 200
+const MAX_PROGRESS_THRESHOLD = 90
+const PROGRESS_INCREMENT_MIN = 3
+const PROGRESS_INCREMENT_MAX = 8
 const MAX_PROGRESS = 100
 const ANIMATION_DELAY_MULTIPLIER = 0.3
 
 export function LoadingScreen() {
   const [currentMessage, setCurrentMessage] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const [progress, setProgress] = useState(10)
   const router = useRouter()
 
   useEffect(() => {
@@ -47,7 +48,9 @@ export function LoadingScreen() {
         if (prev >= MAX_PROGRESS_THRESHOLD) {
           return prev
         }
-        return prev + Math.random() * PROGRESS_INCREMENT_MULTIPLIER
+        const increment =
+          PROGRESS_INCREMENT_MIN + Math.random() * (PROGRESS_INCREMENT_MAX - PROGRESS_INCREMENT_MIN)
+        return Math.min(prev + increment, MAX_PROGRESS_THRESHOLD)
       })
     }, PROGRESS_INTERVAL_MS)
 

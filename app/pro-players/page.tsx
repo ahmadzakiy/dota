@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ProPlayersTable } from "@/components/pro-players-table"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { openDotaAPI } from "@/lib/opendota-api"
+import { getCachedProPlayers } from "@/lib/opendota-api"
 import type { ProPlayer } from "@/lib/types"
 
 type ErrorType = "rate_limit" | "server_error" | "network_error" | "empty_data" | "unknown"
@@ -64,7 +64,7 @@ export default async function ProPlayersPage() {
   let errorState: ErrorState | null = null
 
   try {
-    players = await openDotaAPI.getProPlayers()
+    players = await getCachedProPlayers()
 
     if (!players || players.length === 0) {
       errorState = {

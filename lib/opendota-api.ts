@@ -1,8 +1,8 @@
+import { cache } from "react"
 import {
   getHeroAvatar as getHeroAvatarFromHeroes,
   getHeroName as getHeroNameFromHeroes,
 } from "./heroes"
-
 import type {
   HeroStats,
   Match,
@@ -25,7 +25,7 @@ type PlayerTotal = {
 const OPENDOTA_BASE_URL = "https://api.opendota.com/api"
 const HTTP_NOT_FOUND = 404
 const HTTP_TOO_MANY_REQUESTS = 429
-const API_DELAY_MS = 200
+const API_DELAY_MS = 50 // Reduced from 200ms to 50ms for faster loading
 const RETRY_BASE_DELAY_MS = 1000
 const REFINED_OFFSET_ADDITION = 1000
 
@@ -289,14 +289,20 @@ export class OpenDotaAPI {
         
         Example working account ID: 111620041 (you can test with this)`)
     }
-    const player = await this.getPlayer(steamId)
-    const winLoss = await this.getPlayerWinLoss(steamId)
-    const recentMatches = await this.getPlayerRecentMatches(steamId)
-    const heroes = await this.getPlayerHeroes(steamId)
-    const peers = await this.getPlayerPeers(steamId)
-    const rank = await this.getPlayerRank(steamId)
-    const totals = await this.getPlayerTotals(steamId)
-    const allMatches = await this.getPlayerMatches(steamId, MATCH_LIMIT_RECENT)
+
+    // Fetch all data in parallel for better performance
+    const [player, winLoss, recentMatches, heroes, peers, rank, totals, allMatches] =
+      await Promise.all([
+        this.getPlayer(steamId),
+        this.getPlayerWinLoss(steamId),
+        this.getPlayerRecentMatches(steamId),
+        this.getPlayerHeroes(steamId),
+        this.getPlayerPeers(steamId),
+        this.getPlayerRank(steamId),
+        this.getPlayerTotals(steamId),
+        this.getPlayerMatches(steamId, MATCH_LIMIT_RECENT),
+      ])
+
     const records = this.calculateRecordsFromTotals(allMatches, totals)
     const topFriends = peers
       .filter((peer) => peer.games >= MATCH_LIMIT_TOP_FRIENDS)
@@ -371,6 +377,15 @@ export class OpenDotaAPI {
 }
 
 export const openDotaAPI = new OpenDotaAPI()
+
+// Cached versions of frequently used methods for better performance
+export const getCachedPlayerWrappedData = cache((steamId: string) =>
+  openDotaAPI.getPlayerWrappedData(steamId),
+)
+
+export const getCachedProPlayers = cache(() => openDotaAPI.getProPlayers())
+
+export const getCachedTopPlayers = cache(() => openDotaAPI.getTopPlayers())
 
 // Re-export utility functions from heroes.ts for backward compatibility
 export const getHeroName = getHeroNameFromHeroes

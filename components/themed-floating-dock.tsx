@@ -1,6 +1,6 @@
 "use client"
 
-import { House, Moon, Sun } from "lucide-react"
+import { House, Moon, ShieldCheck, Sun } from "lucide-react"
 import { useTheme } from "@/components/theme-provider"
 import { FloatingDock } from "@/components/ui/floating-dock"
 
@@ -10,10 +10,14 @@ const baseLinks = [
     icon: <House className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
     href: "/",
   },
+  {
+    title: "Go to Pro Players Page",
+    icon: <ShieldCheck className="h-full w-full text-neutral-500 dark:text-neutral-300" />,
+    href: "/pro-players",
+  },
   // {
   //   title: "Go to amorfateh",
   //   icon: (
-  //     // biome-ignore lint/performance/noImgElement: <should use img>
   //     <img
   //       alt="Aceternity Logo"
   //       height={40}
