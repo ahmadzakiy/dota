@@ -35,7 +35,8 @@ export function SocialSharing({ data }: SocialSharingProps) {
     const kills = getTotalValue(data.totals, "kills")
     const deaths = getTotalValue(data.totals, "deaths")
     const assists = getTotalValue(data.totals, "assists")
-    const wrappedUrl = window?.location?.href
+    const wrappedUrl =
+      typeof window !== "undefined" ? window.location.href : "https://dotawrapped.com"
 
     return `🐸 My Dota Wrapped!
 

@@ -395,7 +395,7 @@ export const getHeroAvatar = getHeroAvatarFromHeroes
 export function formatDate(timestamp: number): string {
   return new Date(timestamp * MILLISECONDS_PER_SECOND).toLocaleDateString("en-GB", {
     day: "2-digit",
-    month: "2-digit",
+    month: "long",
     year: "numeric",
   })
 }
