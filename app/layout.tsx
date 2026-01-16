@@ -26,9 +26,16 @@ const bodoniModa = Bodoni_Moda({
 })
 
 export const metadata: Metadata = {
-  title: "Dota Wrapped",
+  title: "Dota Wrapped - Unofficial Dota 2 Stats",
   description:
-    "A Dota stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.",
+    "A community-made Dota stats viewer. Check your yearly performance, feeding sprees, and questionable item builds. Powered by OpenDota API.",
+  keywords: ["Dota 2", "Stats", "Wrapped", "OpenDota", "Dota 2 Stats"],
+  robots: "index, follow",
+  metadataBase: new URL("https://dotawrapped.com"),
+  verification: {
+    google: "site-verification-code",
+    yandex: "site-verification-code",
+  },
 }
 
 export default function RootLayout({

@@ -1,0 +1,20 @@
+# Security.txt for dotawrapped.com
+
+# Contact Information
+Contact: mailto:hello@ahmadzakiy.com
+Contact: https://github.com/ahmadzakiy/dota/issues
+
+# Security Policy
+Policy: https://dotawrapped.com/security
+
+# Acknowledgments
+Acknowledgments: https://dotawrapped.com/security/thanks
+
+# Disclosure Policy (within 14 days)
+Preferred-Languages: en
+
+# Expires (1 year from now)
+Expires: 2027-01-16T23:00:00.000Z
+
+# Canonical URL
+Canonical: https://dotawrapped.com/.well-known/security.txt

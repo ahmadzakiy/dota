@@ -70,12 +70,23 @@ export default function HomePage() {
           <CardTitle>
             <h1 className="text-3xl">Dota Wrapped</h1>
           </CardTitle>
-          <CardDescription>Discover how badly you defended the ancient.</CardDescription>
+          <CardDescription>
+            View your Dota 2 annual statistics. Discover how badly you defended the ancient.
+          </CardDescription>
+          <div className="mt-2 rounded-lg border border-blue-500/20 bg-blue-500/10 p-3">
+            <p className="text-blue-300 text-xs">
+              🔒 <strong>Privacy First:</strong> We only fetch public Dota stats from OpenDota. No
+              login required, no personal data stored.
+              <Link className="ml-1 underline" href="/privacy">
+                Learn more
+              </Link>
+            </p>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="steamId">Steam ID, ex: 156606112</Label>
+              <Label htmlFor="steamId">Steam ID (Public profile only - No login/password)</Label>
               <Input
                 disabled={isLoading}
                 id="steamId"

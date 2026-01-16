@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Block sensitive directories
+Disallow: /api/
+Disallow: /_next/
+Disallow: /.git/
+Disallow: /.env*
+
+# Allow specific API endpoints if needed
+Allow: /api/opendota
+
+# Sitemap
+Sitemap: https://dotawrapped.com/sitemap.xml
+
+# Crawl delay (optional, be respectful to OpenDota API)
+Crawl-delay: 1
