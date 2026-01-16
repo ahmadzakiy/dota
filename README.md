@@ -1,5 +1,7 @@
 # Dota Wrapped
 
+hello !
+
 A Dota stats app that'll tell you exactly how many hours you've wasted feeding mid lane and why your friends stopped playing with you. It's like Spotify Wrapped, but instead of your questionable music taste, it exposes your questionable item builds and that time you went 0/15/2 as carry.
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/zakiy-project/dota)
@@ -184,6 +186,7 @@ If you encounter any issues or have suggestions for improvements, please:
 2. Create a new issue with detailed description
 3. Include steps to reproduce (for bugs)
 4. Attach screenshots if applicable
+
 
 ## 📊 API Information
 
