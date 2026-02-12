@@ -10,6 +10,10 @@ type PageProps = {
   params: Promise<{ steamId: string }>
 }
 
+// Cache this page for 1 hour (3600 seconds)
+export const revalidate = 3600
+
+
 export default async function WrappedPage({ params }: PageProps) {
   const { steamId } = await params
   const wrappedData = await getCachedPlayerWrappedData(steamId)
