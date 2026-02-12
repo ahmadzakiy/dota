@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getCachedProPlayers } from "@/lib/opendota-api"
 import type { ProPlayer } from "@/lib/types"
 
+
+// Cache this page for 12 hours (43200 seconds) - Pro players data changes infrequently
+export const revalidate = 43200
 type ErrorType = "rate_limit" | "server_error" | "network_error" | "empty_data" | "unknown"
 
 type ErrorState = {
