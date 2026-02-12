@@ -1161,5 +1161,5 @@ export function getHeroAvatar(heroId: string | number): string {
   // Extract hero name from "npc_dota_hero_jakiro" format to "jakiro"
   const cleanName = hero?.name.replace("npc_dota_hero_", "")
 
-  return `https://cdn.steamstatic.com/apps/dota2/images/dota_react/heroes/${cleanName}.png`
+  return `/heroes/${cleanName}.png`
 }
