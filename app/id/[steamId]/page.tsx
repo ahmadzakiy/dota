@@ -13,14 +13,6 @@ type PageProps = {
 // Cache this page for 1 hour (3600 seconds)
 export const revalidate = 3600
 
-// Generate metadata for better SEO
-export async function generateMetadata({ params }: PageProps) {
-  const { steamId } = await params
-  return {
-    title: `Dota Wrapped - Player ${steamId}`,
-    description: 'View your Dota 2 annual statistics and player profile',
-  }
-}
 
 export default async function WrappedPage({ params }: PageProps) {
   const { steamId } = await params
