@@ -9,6 +9,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+    // Enable MCP server for AI-assisted debugging
+    mcpServer: true,
+  },
   headers() {
     // Different CSP for dev vs production
     // Dev mode needs 'unsafe-inline' for Next.js hot reloading
@@ -39,9 +43,9 @@ const nextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self';",
-              isDev
-                ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com;"
-                : "script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com;",
+              // Note: 'unsafe-inline' is required for Next.js streaming SSR
+              // To harden further, implement nonce-based CSP with middleware
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com;",
               "style-src 'self' 'unsafe-inline';",
               "img-src 'self' data: https://www.opendota.com https://avatars.steamstatic.com https://flagcdn.com;",
               "font-src 'self' data:;",

@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["-y", "@stitch-ai/mcp-server"],
+      "env": {
+        "STITCH_API_KEY": "your-api-key"
+      }
+    },
+    "nextjs-debug": {
+      "command": "npx",
+      "args": ["next-devtools-mcp"],
+      "env": {}
+    }
+  }
+}
