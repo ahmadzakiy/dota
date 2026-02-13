@@ -57,6 +57,9 @@ const MATCH_LIMIT_RECENT = 100
 const MATCH_LIMIT_TOP_FRIENDS = 3
 const MATCH_LIMIT_DISPLAY = 5
 
+// API limits for unbounded endpoints
+const HEROES_LIMIT = 50
+
 // Time conversion
 const MILLISECONDS_PER_SECOND = 1000
 
@@ -78,10 +81,20 @@ export class OpenDotaAPI {
     return accountId.toString()
   }
 
-  private async fetchWithRetry<T = unknown>(url: string, retries = 3): Promise<T> {
+  private async fetchWithRetry<T = unknown>(
+    url: string,
+    retries = 3,
+    cacheOptions?: { revalidate?: number },
+  ): Promise<T> {
     for (let i = 0; i < retries; i++) {
       try {
-        const response = await fetch(url)
+        const fetchOptions: RequestInit & { next?: { revalidate?: number } } = {}
+
+        if (cacheOptions?.revalidate) {
+          fetchOptions.next = { revalidate: cacheOptions.revalidate }
+        }
+
+        const response = await fetch(url, fetchOptions)
 
         if (!response.ok) {
           if (response.status === HTTP_NOT_FOUND) {
@@ -127,60 +140,60 @@ export class OpenDotaAPI {
   getPlayer(steamId: string): Promise<Player> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 3600 })
   }
 
   getPlayerWinLoss(steamId: string): Promise<WinLoss> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/wl`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 3600 })
   }
 
   getPlayerMatches(steamId: string, limit = 20): Promise<Match[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/matches?limit=${limit}`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 1800 })
   }
 
-  getPlayerHeroes(steamId: string): Promise<HeroStats[]> {
+  getPlayerHeroes(steamId: string, limit = HEROES_LIMIT): Promise<HeroStats[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/heroes`
-    return this.fetchWithRetry(url)
+    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/heroes?limit=${limit}`
+    return this.fetchWithRetry(url, 3, { revalidate: 3600 })
   }
 
   getPlayerPeers(steamId: string): Promise<Peer[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/peers`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 3600 })
   }
 
   getPlayerTotals(steamId: string): Promise<PlayerTotal[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/totals`
-    return this.fetchWithRetry<PlayerTotal[]>(url)
+    return this.fetchWithRetry<PlayerTotal[]>(url, 3, { revalidate: 3600 })
   }
 
   getPlayerRecentMatches(steamId: string): Promise<Match[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
     const url = `${OPENDOTA_BASE_URL}/players/${accountId}/recentMatches`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 300 })
   }
 
   getTopPlayers(): Promise<TopPlayer[]> {
     const url = `${OPENDOTA_BASE_URL}/topPlayers`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 86_400 })
   }
 
   getProPlayers(): Promise<ProPlayer[]> {
     const url = `${OPENDOTA_BASE_URL}/proPlayers`
-    return this.fetchWithRetry(url)
+    return this.fetchWithRetry(url, 3, { revalidate: 86_400 })
   }
 
   // Helper function to search for oldest match at a specific offset
   private async searchAtOffset(accountId: string, offset: number): Promise<Match | undefined> {
     try {
       const url = `${OPENDOTA_BASE_URL}/players/${accountId}/matches?limit=${MATCH_LIMIT_BATCH}&offset=${offset}`
-      const matches = await this.fetchWithRetry<Match[]>(url)
+      const matches = await this.fetchWithRetry<Match[]>(url, 3, { revalidate: 86_400 })
 
       if (matches.length > 0) {
         // Find the oldest match in this batch
@@ -203,7 +216,7 @@ export class OpenDotaAPI {
     try {
       const refinedOffset = bestOffset + REFINED_OFFSET_ADDITION
       const url = `${OPENDOTA_BASE_URL}/players/${accountId}/matches?limit=${MATCH_LIMIT_REFINED}&offset=${refinedOffset}`
-      const matches = await this.fetchWithRetry<Match[]>(url)
+      const matches = await this.fetchWithRetry<Match[]>(url, 3, { revalidate: 86_400 })
 
       if (matches.length > 0) {
         const potentialFirst = matches.reduce((oldest: Match, match: Match) =>
@@ -226,7 +239,9 @@ export class OpenDotaAPI {
     try {
       // First, get total match count to estimate where the first match might be
       const allMatchesUrl = `${OPENDOTA_BASE_URL}/players/${accountId}/matches?limit=${MATCH_LIMIT_SINGLE}`
-      const sampleMatches = await this.fetchWithRetry<Match[]>(allMatchesUrl)
+      const sampleMatches = await this.fetchWithRetry<Match[]>(allMatchesUrl, 3, {
+        revalidate: 86_400,
+      })
 
       if (sampleMatches.length === 0) {
         return
@@ -386,6 +401,33 @@ export const getCachedPlayerWrappedData = cache((steamId: string) =>
 export const getCachedProPlayers = cache(() => openDotaAPI.getProPlayers())
 
 export const getCachedTopPlayers = cache(() => openDotaAPI.getTopPlayers())
+
+// Individual cached data fetchers for Suspense streaming
+export const getCachedPlayer = cache((steamId: string) => openDotaAPI.getPlayer(steamId))
+
+export const getCachedPlayerWinLoss = cache((steamId: string) =>
+  openDotaAPI.getPlayerWinLoss(steamId),
+)
+
+export const getCachedPlayerRank = cache((steamId: string) => openDotaAPI.getPlayerRank(steamId))
+
+export const getCachedPlayerTotals = cache((steamId: string) =>
+  openDotaAPI.getPlayerTotals(steamId),
+)
+
+export const getCachedPlayerFirstMatch = cache((steamId: string) =>
+  openDotaAPI.getPlayerFirstMatch(steamId),
+)
+
+export const getCachedPlayerHeroes = cache((steamId: string) =>
+  openDotaAPI.getPlayerHeroes(steamId),
+)
+
+export const getCachedPlayerPeers = cache((steamId: string) => openDotaAPI.getPlayerPeers(steamId))
+
+export const getCachedPlayerRecentMatches = cache((steamId: string) =>
+  openDotaAPI.getPlayerRecentMatches(steamId),
+)
 
 // Re-export utility functions from heroes.ts for backward compatibility
 export const getHeroName = getHeroNameFromHeroes

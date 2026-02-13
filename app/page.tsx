@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { GradientAnimation } from "@/components/dynamic-imports"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,7 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { GradientAnimation } from "@/components/ui/gradient-animation"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { openDotaAPI } from "@/lib/opendota-api"
@@ -86,7 +86,7 @@ export default function HomePage() {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <div className="space-y-2">
-              <Label htmlFor="steamId">Steam ID (Public profile only - No login/password)</Label>
+              <Label htmlFor="steamId">Steam ID</Label>
               <Input
                 disabled={isLoading}
                 id="steamId"

@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -21,84 +21,75 @@ type RecentMatchesSectionProps = {
   data: WrappedData
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: <improve next time>
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Complex switch statement for match sorting
+const getSortValue = (match: Match, column: keyof Match | "is_win" | "side"): number | string => {
+  switch (column) {
+    case "match_id":
+      return match.match_id
+    case "start_time":
+      return match.start_time
+    case "is_win":
+      return match.player_slot < PLAYER_SLOT_DIRE_THRESHOLD === match.radiant_win ? 1 : 0
+    case "side":
+      return match.player_slot < PLAYER_SLOT_DIRE_THRESHOLD ? "Radiant" : "Dire"
+    case "hero_id":
+      return getHeroName(match.hero_id)
+    case "duration":
+      return match.duration
+    case "deaths":
+      return match.deaths
+    case "kills":
+      return match.kills
+    case "assists":
+      return match.assists
+    case "gold_per_min":
+      return match.gold_per_min || 0
+    case "xp_per_min":
+      return match.xp_per_min || 0
+    case "last_hits":
+      return match.last_hits || 0
+    default:
+      return match.start_time
+  }
+}
+
 export function RecentMatchesSection({ data }: RecentMatchesSectionProps) {
   const [matchSearchTerm, setMatchSearchTerm] = useState("")
   const [sortColumn, setSortColumn] = useState<keyof Match | "is_win" | "side">("start_time")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
 
-  // Helper function to get sort values for a match
-  const getSortValue = (match: Match, column: keyof Match | "is_win" | "side"): number | string => {
-    switch (column) {
-      case "match_id":
-        return match.match_id
-      case "start_time":
-        return match.start_time
-      case "is_win": {
-        const isRadiant = match.player_slot < PLAYER_SLOT_DIRE_THRESHOLD
-        const won = isRadiant === match.radiant_win
-        return won ? 1 : 0
-      }
-      case "side":
-        return match.player_slot < PLAYER_SLOT_DIRE_THRESHOLD ? "Radiant" : "Dire"
-      case "hero_id":
-        return getHeroName(match.hero_id)
-      case "duration":
-        return match.duration
-      case "deaths":
-        return match.deaths
-      case "kills":
-        return match.kills
-      case "assists":
-        return match.assists
-      case "gold_per_min":
-        return match.gold_per_min || 0
-      case "xp_per_min":
-        return match.xp_per_min || 0
-      case "last_hits":
-        return match.last_hits || 0
-      default:
-        return match.start_time
-    }
-  }
-
-  // Helper function to compare two values with sort order
-  const compareValues = (aValue: number | string, bValue: number | string): number => {
-    if (typeof aValue === "string" && typeof bValue === "string") {
-      return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
-    }
-
-    return sortOrder === "asc"
-      ? (aValue as number) - (bValue as number)
-      : (bValue as number) - (aValue as number)
-  }
-
-  // Filter and sort recent matches
-  const getFilteredAndSortedMatches = () => {
+  // Memoized filtered and sorted matches - only recalculate when dependencies change
+  const filteredMatches = useMemo(() => {
     if (!data?.recentMatches) {
       return []
     }
 
-    let filteredMatches = data.recentMatches
+    let result = data.recentMatches
 
     // Filter by hero name search
     if (matchSearchTerm.trim()) {
-      filteredMatches = filteredMatches.filter((match) =>
-        getHeroName(match.hero_id).toLowerCase().includes(matchSearchTerm.toLowerCase().trim()),
+      const searchLower = matchSearchTerm.toLowerCase().trim()
+      result = result.filter((match) =>
+        getHeroName(match.hero_id).toLowerCase().includes(searchLower),
       )
     }
 
     // Sort based on selected column
-    const sortedMatches = [...filteredMatches].sort((a, b) => {
+    const sortedMatches = [...result].sort((a, b) => {
       const aValue = getSortValue(a, sortColumn)
       const bValue = getSortValue(b, sortColumn)
-      return compareValues(aValue, bValue)
+
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+      }
+
+      return sortOrder === "asc"
+        ? (aValue as number) - (bValue as number)
+        : (bValue as number) - (aValue as number)
     })
 
     return sortedMatches
-  }
-
-  const filteredMatches = getFilteredAndSortedMatches()
+  }, [data?.recentMatches, matchSearchTerm, sortColumn, sortOrder])
 
   return (
     <Card className="relative bg-card backdrop-blur-md">

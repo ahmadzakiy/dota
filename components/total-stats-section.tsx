@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
@@ -21,62 +21,55 @@ type TotalStatsSectionProps = {
   data: WrappedData
 }
 
-export function TotalStatsSection({ data }: TotalStatsSectionProps) {
-  const [statSearchTerm, setStatSearchTerm] = useState("")
-  const [statSortColumn, setStatSortColumn] = useState<"field" | "sum" | "average" | "n">("sum")
-  const [statSortOrder, setStatSortOrder] = useState<"asc" | "desc">("desc")
-
-  // Helper function to format statistic names
-  const formatStatName = (field: string): string => {
-    const nameMap: Record<string, string> = {
-      kills: "⚔️ Kills",
-      deaths: "💀 Deaths",
-      assists: "🤝 Assists",
-      kda: "📊 KDA Ratio",
-      gold_per_min: "💰 Gold Per Minute",
-      xp_per_min: "⭐ Experience Per Minute",
-      last_hits: "🎯 Last Hits",
-      denies: "🚫 Denies",
-      hero_damage: "💥 Hero Damage",
-      tower_damage: "🏗️ Tower Damage",
-      hero_healing: "💚 Hero Healing",
-      duration: "⏱️ Match Duration",
-      level: "🔢 Final Level",
-      win: "🏆 Wins",
-      lose: "😭 Losses",
-      stuns: "⚡ Stun Duration",
-      camps_stacked: "🏕️ Camps Stacked",
-      rune_pickups: "🔮 Rune Pickups",
-      firstblood_claimed: "🩸 First Bloods",
-      teamfight_participation: "⚔️ Teamfight Participation",
-      obs_placed: "👁️ Observer Wards Placed",
-      sen_placed: "🔍 Sentry Wards Placed",
-      creeps_stacked: "🐛 Creeps Stacked",
-      lane_efficiency_pct: "📈 Lane Efficiency",
-      purchase_tpscroll: "🌀 TP Scrolls Bought",
-      purchase_ward_observer: "👁️ Observer Wards Bought",
-      purchase_ward_sentry: "🔍 Sentry Wards Bought",
-      purchase_gem: "💎 Gems Bought",
-      purchase_rapier: "⚔️ Rapiers Bought",
-      pings: "📢 Pings",
-      throw: "🤡 Throws",
-      comeback: "🔄 Comebacks",
-      stomp: "🚀 Stomps",
-    }
-    return (
-      nameMap[field] || `📊 ${field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}`
-    )
+// Helper function to format statistic names - defined outside component
+const formatStatName = (field: string): string => {
+  const nameMap: Record<string, string> = {
+    kills: "⚔️ Kills",
+    deaths: "💀 Deaths",
+    assists: "🤝 Assists",
+    kda: "📊 KDA Ratio",
+    gold_per_min: "💰 Gold Per Minute",
+    xp_per_min: "⭐ Experience Per Minute",
+    last_hits: "🎯 Last Hits",
+    denies: "🚫 Denies",
+    hero_damage: "💥 Hero Damage",
+    tower_damage: "🏗️ Tower Damage",
+    hero_healing: "💚 Hero Healing",
+    duration: "⏱️ Match Duration",
+    level: "🔢 Final Level",
+    win: "🏆 Wins",
+    lose: "😭 Losses",
+    stuns: "⚡ Stun Duration",
+    camps_stacked: "🏕️ Camps Stacked",
+    rune_pickups: "🔮 Rune Pickups",
+    firstblood_claimed: "🩸 First Bloods",
+    teamfight_participation: "⚔️ Teamfight Participation",
+    obs_placed: "👁️ Observer Wards Placed",
+    sen_placed: "🔍 Sentry Wards Placed",
+    creeps_stacked: "🐛 Creeps Stacked",
+    lane_efficiency_pct: "📈 Lane Efficiency",
+    purchase_tpscroll: "🌀 TP Scrolls Bought",
+    purchase_ward_observer: "👁️ Observer Wards Bought",
+    purchase_ward_sentry: "🔍 Sentry Wards Bought",
+    purchase_gem: "💎 Gems Bought",
+    purchase_rapier: "⚔️ Rapiers Bought",
+    pings: "📢 Pings",
+    throw: "🤡 Throws",
+    comeback: "🔄 Comebacks",
+    stomp: "🚀 Stomps",
   }
+  return nameMap[field] || `📊 ${field.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())}`
+}
 
-  // Helper function to format duration values
-  const formatDurationValue = (value: number, isAverage: boolean): string => {
+// Helper function to format statistic values - defined outside component
+const formatStatValue = (field: string, value: number, isAverage = false): string => {
+  if (field === "duration") {
     return isAverage
       ? `${Math.round(value / SECONDS_IN_MINUTE)}m`
       : `${Math.round(value / SECONDS_IN_HOUR)}h`
   }
 
-  // Helper function to format large numbers (damage/healing)
-  const formatLargeNumber = (value: number): string => {
+  if (field === "hero_damage" || field === "tower_damage" || field === "hero_healing") {
     if (value >= MILLION) {
       return `${(value / MILLION).toFixed(1)}M`
     }
@@ -86,67 +79,61 @@ export function TotalStatsSection({ data }: TotalStatsSectionProps) {
     return Math.round(value).toLocaleString()
   }
 
-  // Helper function to check if field is a large number type
-  const isLargeNumberField = (field: string): boolean => {
-    return field === "hero_damage" || field === "tower_damage" || field === "hero_healing"
+  if (field === "stuns") {
+    return `${value.toFixed(1)}s`
+  }
+  if (field === "lane_efficiency_pct") {
+    return `${value.toFixed(1)}%`
+  }
+  if (field === "kda" || isAverage) {
+    return value.toFixed(2)
   }
 
-  // Helper function to format statistic values
-  const formatStatValue = (field: string, value: number, isAverage = false): string => {
-    if (field === "duration") {
-      return formatDurationValue(value, isAverage)
-    }
+  return Math.round(value).toLocaleString()
+}
 
-    if (isLargeNumberField(field)) {
-      return formatLargeNumber(value)
-    }
-
-    if (field === "stuns") {
-      return `${value.toFixed(1)}s`
-    }
-    if (field === "lane_efficiency_pct") {
-      return `${value.toFixed(1)}%`
-    }
-    if (field === "kda" || isAverage) {
-      return value.toFixed(2)
-    }
-
-    return Math.round(value).toLocaleString()
+// Helper function to get sort value for stats
+const getStatSortValue = (
+  stat: { field: string; sum: number; n: number },
+  column: "field" | "sum" | "average" | "n",
+): string | number => {
+  switch (column) {
+    case "field":
+      return formatStatName(stat.field)
+    case "sum":
+      return stat.sum
+    case "average":
+      return stat.n > 0 ? stat.sum / stat.n : 0
+    case "n":
+      return stat.n
+    default:
+      return stat.sum
   }
+}
 
-  // Helper function to get sort value for stats
-  const getStatSortValue = (stat: { field: string; sum: number; n: number }, column: string) => {
-    switch (column) {
-      case "field":
-        return formatStatName(stat.field)
-      case "sum":
-        return stat.sum
-      case "average":
-        return stat.n > 0 ? stat.sum / stat.n : 0
-      case "n":
-        return stat.n
-      default:
-        return stat.sum
-    }
-  }
+export function TotalStatsSection({ data }: TotalStatsSectionProps) {
+  const [statSearchTerm, setStatSearchTerm] = useState("")
+  const [statSortColumn, setStatSortColumn] = useState<"field" | "sum" | "average" | "n">("sum")
+  const [statSortOrder, setStatSortOrder] = useState<"asc" | "desc">("desc")
 
-  // Filter and sort stats
-  const getFilteredAndSortedStats = () => {
+  // Memoized filtered and sorted stats - only recalculate when dependencies change
+  const filteredStats = useMemo(() => {
     if (!data?.totals) {
       return []
     }
 
-    let filteredStats = data.totals
+    let result = data.totals
 
     // Filter by search term
     if (statSearchTerm.trim()) {
-      filteredStats = filteredStats.filter((stat) =>
-        formatStatName(stat.field).toLowerCase().includes(statSearchTerm.toLowerCase().trim()),
+      const searchLower = statSearchTerm.toLowerCase().trim()
+      result = result.filter((stat) =>
+        formatStatName(stat.field).toLowerCase().includes(searchLower),
       )
     }
 
     // Sort stats
-    const sortedStats = [...filteredStats].sort((a, b) => {
+    const sortedStats = [...result].sort((a, b) => {
       const aValue = getStatSortValue(a, statSortColumn)
       const bValue = getStatSortValue(b, statSortColumn)
 
@@ -160,9 +147,7 @@ export function TotalStatsSection({ data }: TotalStatsSectionProps) {
     })
 
     return sortedStats
-  }
-
-  const filteredStats = getFilteredAndSortedStats()
+  }, [data?.totals, statSearchTerm, statSortColumn, statSortOrder])
 
   return (
     <Card className="relative bg-card backdrop-blur-md">

@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -22,34 +22,35 @@ type HerosSectionProps = {
   data: WrappedData
 }
 
+// Helper functions for hero filtering and sorting - defined outside component to avoid re-creation
+const getHeroWinPercentage = (hero: { games: number; win: number }): number => {
+  return hero.games > 0 ? (hero.win / hero.games) * PERCENTAGE_MULTIPLIER : 0
+}
+
+const getHeroLosses = (hero: { games: number; win: number }): number => {
+  return hero.games - hero.win
+}
+
 export function HeroesSection({ data }: HerosSectionProps) {
   const [heroSearchTerm, setHeroSearchTerm] = useState("")
   const [heroFilterBy, setHeroFilterBy] = useState<"games" | "win" | "winPercentage" | "lose">(
     "games",
   )
 
-  // Helper functions for hero filtering and sorting
-  const getHeroWinPercentage = (hero: { games: number; win: number }): number => {
-    return hero.games > 0 ? (hero.win / hero.games) * PERCENTAGE_MULTIPLIER : 0
-  }
-
-  const getHeroLosses = (hero: { games: number; win: number }): number => {
-    return hero.games - hero.win
-  }
-
-  // Filter and sort heroes based on search term and filter option
-  const getFilteredAndSortedHeroes = () => {
-    let filteredHeroes = data.heroes
+  // Memoized filtered and sorted heroes - only recalculate when dependencies change
+  const filteredHeroes = useMemo(() => {
+    let result = data.heroes
 
     // Filter by search term
     if (heroSearchTerm.trim()) {
-      filteredHeroes = filteredHeroes.filter((hero) =>
-        getHeroName(hero.hero_id).toLowerCase().includes(heroSearchTerm.toLowerCase().trim()),
+      const searchLower = heroSearchTerm.toLowerCase().trim()
+      result = result.filter((hero) =>
+        getHeroName(hero.hero_id).toLowerCase().includes(searchLower),
       )
     }
 
-    // Sort based on filter option
-    const sortedHeroes = [...filteredHeroes].sort((a, b) => {
+    // Sort based on filter option - create comparator once
+    const sortedHeroes = [...result].sort((a, b) => {
       switch (heroFilterBy) {
         case "games":
           return b.games - a.games
@@ -65,9 +66,7 @@ export function HeroesSection({ data }: HerosSectionProps) {
     })
 
     return sortedHeroes
-  }
-
-  const filteredHeroes = getFilteredAndSortedHeroes()
+  }, [data.heroes, heroSearchTerm, heroFilterBy])
 
   return (
     <Card className="@container/card">

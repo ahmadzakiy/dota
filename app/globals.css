@@ -179,3 +179,14 @@
 .animate-fifth {
   animation: moveInCircle 20s ease infinite;
 }
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-first,
+  .animate-second,
+  .animate-third,
+  .animate-fourth,
+  .animate-fifth {
+    animation: none;
+  }
+}

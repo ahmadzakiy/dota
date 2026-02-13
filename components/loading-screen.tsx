@@ -1,7 +1,8 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { GradientAnimation } from "@/components/dynamic-imports"
 import {
   Card,
   CardContent,
@@ -10,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { GradientAnimation } from "@/components/ui/gradient-animation"
 import { Footer } from "./footer"
 import { Button } from "./ui/button"
 import { Progress } from "./ui/progress"
@@ -25,8 +25,7 @@ const LOADING_MESSAGES = [
   "Compiling your goblin's journey",
 ]
 
-const MESSAGE_INTERVAL_MS = 1500
-const PROGRESS_INTERVAL_MS = 200
+const MESSAGE_INTERVAL_MS = 2000
 const MAX_PROGRESS_THRESHOLD = 90
 const PROGRESS_INCREMENT_MIN = 3
 const PROGRESS_INCREMENT_MAX = 8
@@ -36,27 +35,27 @@ const ANIMATION_DELAY_MULTIPLIER = 0.3
 export function LoadingScreen() {
   const [currentMessage, setCurrentMessage] = useState(0)
   const [progress, setProgress] = useState(10)
+  const progressRef = useRef(10)
   const router = useRouter()
 
   useEffect(() => {
-    const messageInterval = setInterval(() => {
+    // Single interval for both message rotation and progress updates
+    // Reduced from 2 separate intervals to 1
+    const interval = setInterval(() => {
+      // Update message every 2 seconds
       setCurrentMessage((prev) => (prev + 1) % LOADING_MESSAGES.length)
-    }, MESSAGE_INTERVAL_MS)
 
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= MAX_PROGRESS_THRESHOLD) {
-          return prev
-        }
+      // Update progress gradually
+      if (progressRef.current < MAX_PROGRESS_THRESHOLD) {
         const increment =
           PROGRESS_INCREMENT_MIN + Math.random() * (PROGRESS_INCREMENT_MAX - PROGRESS_INCREMENT_MIN)
-        return Math.min(prev + increment, MAX_PROGRESS_THRESHOLD)
-      })
-    }, PROGRESS_INTERVAL_MS)
+        progressRef.current = Math.min(progressRef.current + increment, MAX_PROGRESS_THRESHOLD)
+        setProgress(progressRef.current)
+      }
+    }, MESSAGE_INTERVAL_MS)
 
     return () => {
-      clearInterval(messageInterval)
-      clearInterval(progressInterval)
+      clearInterval(interval)
     }
   }, [])
 

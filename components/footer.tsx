@@ -20,11 +20,6 @@ export function Footer() {
           Security
         </a>
         <span>•</span>
-        <div className="flex items-center gap-1">
-          <span className="text-green-400">🔒</span>
-          <span>HTTPS Secured</span>
-        </div>
-        <span>•</span>
         <a
           className="hover:text-primary hover:underline"
           href="https://ahmadzakiy.com"

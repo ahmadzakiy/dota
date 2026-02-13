@@ -23,7 +23,7 @@ export function FriendsSection({ data }: FriendsSectionProps) {
         {data.topFriends && data.topFriends.length > 0 ? (
           <ScrollArea className="h-[446px] w-full space-y-4">
             <div className="space-y-4">
-              {data.topFriends.slice(0, 10).map((friend, index) => {
+              {data.topFriends.map((friend, index) => {
                 const friendWinRate =
                   friend.with_games > 0
                     ? ((friend.with_win / friend.with_games) * PERCENTAGE_MULTIPLIER).toFixed(1)

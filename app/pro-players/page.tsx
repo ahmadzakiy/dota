@@ -1,9 +1,9 @@
-import { ProPlayersTable } from "@/components/pro-players-table"
-import { getCachedProPlayers } from "@/lib/opendota-api"
+import { ProPlayersTable } from "@/components/dynamic-imports"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { getCachedProPlayers } from "@/lib/opendota-api"
 
 // Cache this page for 12 hours (43200 seconds) - Pro players data changes infrequently
-export const revalidate = 43200
+export const revalidate = 43_200
 
 export default async function ProPlayersPage() {
   const players = await getCachedProPlayers()

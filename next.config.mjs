@@ -36,7 +36,7 @@ const nextConfig = {
               "default-src 'self';",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com;",
               "style-src 'self' 'unsafe-inline';",
-              "img-src 'self' data: https://www.opendota.com https://avatars.steamstatic.com;",
+              "img-src 'self' data: https://www.opendota.com https://avatars.steamstatic.com https://flagcdn.com;",
               "font-src 'self' data:;",
               "connect-src 'self' https://api.opendota.com https://www.google-analytics.com;",
               "frame-src 'none';",

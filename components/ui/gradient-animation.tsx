@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { cn } from "@/lib/utils"
 
 // Constants for animation smoothing
@@ -41,11 +41,16 @@ export const GradientAnimation = ({
   containerClassName?: string
 }) => {
   const interactiveRef = useRef<HTMLButtonElement>(null)
-  const [curX, setCurX] = useState(0)
-  const [curY, setCurY] = useState(0)
-  const [tgX, setTgX] = useState(0)
-  const [tgY, setTgY] = useState(0)
+  // Use refs instead of state to avoid re-renders during animation
+  const curPos = useRef({ x: 0, y: 0 })
+  const targetPos = useRef({ x: 0, y: 0 })
+  const animationFrameRef = useRef<number | null>(null)
+  const isSafariRef = useRef(false)
 
+  // Check for reduced motion preference
+  const prefersReducedMotion = useRef(false)
+
+  // Set CSS custom properties once on mount
   useEffect(() => {
     document.body.style.setProperty("--gradient-background-start", gradientBackgroundStart)
     document.body.style.setProperty("--gradient-background-end", gradientBackgroundEnd)
@@ -57,6 +62,12 @@ export const GradientAnimation = ({
     document.body.style.setProperty("--pointer-color", pointerColor)
     document.body.style.setProperty("--size", size)
     document.body.style.setProperty("--blending-value", blendingValue)
+
+    // Check Safari once
+    isSafariRef.current = SAFARI_REGEX.test(navigator.userAgent)
+
+    // Check for reduced motion preference
+    prefersReducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches
   }, [
     gradientBackgroundStart,
     gradientBackgroundEnd,
@@ -70,32 +81,49 @@ export const GradientAnimation = ({
     blendingValue,
   ])
 
+  // Animation loop using requestAnimationFrame instead of state updates
   useEffect(() => {
-    function move() {
+    // Skip animation if user prefers reduced motion
+    if (prefersReducedMotion.current) {
+      return
+    }
+
+    function animate() {
       if (!interactiveRef.current) {
+        animationFrameRef.current = requestAnimationFrame(animate)
         return
       }
-      setCurX(curX + (tgX - curX) / ANIMATION_SMOOTHING_FACTOR)
-      setCurY(curY + (tgY - curY) / ANIMATION_SMOOTHING_FACTOR)
+
+      // Smooth interpolation using refs (no re-renders)
+      curPos.current.x += (targetPos.current.x - curPos.current.x) / ANIMATION_SMOOTHING_FACTOR
+      curPos.current.y += (targetPos.current.y - curPos.current.y) / ANIMATION_SMOOTHING_FACTOR
+
+      // Direct DOM manipulation instead of state updates
       interactiveRef.current.style.transform = `translate(${Math.round(
-        curX,
-      )}px, ${Math.round(curY)}px)`
+        curPos.current.x,
+      )}px, ${Math.round(curPos.current.y)}px)`
+
+      animationFrameRef.current = requestAnimationFrame(animate)
     }
-    move()
-  }, [tgX, tgY, curX, curY])
+
+    // Start animation loop
+    animationFrameRef.current = requestAnimationFrame(animate)
+
+    // Cleanup
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+      }
+    }
+  }, [])
 
   const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (interactiveRef.current) {
       const rect = interactiveRef.current.getBoundingClientRect()
-      setTgX(event.clientX - rect.left)
-      setTgY(event.clientY - rect.top)
+      targetPos.current.x = event.clientX - rect.left
+      targetPos.current.y = event.clientY - rect.top
     }
   }
-
-  const [isSafari, setIsSafari] = useState(false)
-  useEffect(() => {
-    setIsSafari(SAFARI_REGEX.test(navigator.userAgent))
-  }, [])
 
   return (
     <div
@@ -123,7 +151,7 @@ export const GradientAnimation = ({
       <div
         className={cn(
           "absolute inset-0",
-          isSafari ? "blur-2xl" : "[filter:url(#blurMe)_blur(40px)]",
+          isSafariRef.current ? "blur-2xl" : "[filter:url(#blurMe)_blur(40px)]",
         )}
       >
         <div

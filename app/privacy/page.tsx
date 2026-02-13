@@ -1,6 +1,6 @@
 import Link from "next/link"
+import { GradientAnimation } from "@/components/dynamic-imports"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { GradientAnimation } from "@/components/ui/gradient-animation"
 
 export default function PrivacyPage() {
   return (
