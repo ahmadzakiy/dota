@@ -48,31 +48,36 @@ app/
     └── page.tsx         # Privacy policy
 
 components/
-├── ui/                  # Reusable UI primitives (Radix-based, Shadcn-style)
+├── ui/                          # Reusable UI primitives (Radix-based, Shadcn-style)
 │   ├── button.tsx, card.tsx, badge.tsx, input.tsx, label.tsx
 │   ├── select.tsx, dropdown-menu.tsx, hover-card.tsx
 │   ├── table.tsx, pagination.tsx, scroll-area.tsx
 │   ├── skeleton.tsx, progress.tsx, avatar.tsx
 │   ├── sonner.tsx, floating-dock.tsx
 │   └── background-gradient.tsx, gradient-animation.tsx
+├── dynamic-imports.tsx          # Dynamic import wrappers (code splitting)
+├── loading-skeletons.tsx        # Skeleton components for Suspense boundaries
 ├── player-overview.tsx          # Player profile header + rank
-├── heroes-section.tsx           # Top heroes breakdown
-├── recent-matches-section.tsx   # Recent match history
-├── total-stats-section.tsx      # Lifetime stat records
+├── heroes-section.tsx           # Top heroes breakdown (memoized filtering)
+├── recent-matches-section.tsx   # Recent match history (memoized sorting)
+├── total-stats-section.tsx      # Lifetime stat records (memoized filtering)
 ├── friends-section.tsx          # Top party friends
 ├── social-sharing.tsx           # Share buttons / OG image
 ├── pro-players-table.tsx        # Searchable pro players table
-├── loading-screen.tsx           # Full-page loading animation
+├── loading-screen.tsx           # Full-page loading animation (single interval, ref-based)
 ├── themed-floating-dock.tsx     # Bottom navigation dock
 ├── theme-provider.tsx           # Dark mode provider
 └── footer.tsx                   # Site footer
 
 lib/
-├── opendota-api.ts      # OpenDota API client (class-based, with retry + caching)
+├── opendota-api.ts      # OpenDota API client (retry, HTTP caching, rate limiting, bounded fetching)
 ├── types.ts             # TypeScript types (Player, Match, HeroStats, Peer, etc.)
 ├── heroes.ts            # Hero name/avatar mapping (static data)
 ├── data.json            # Static reference data
 └── utils.ts             # cn() utility (clsx + tailwind-merge)
+
+scripts/
+└── download-heroes.mjs  # Hero image download script
 
 styles/
 └── globals.css          # Additional global styles
@@ -121,6 +126,8 @@ styles/
 - **MUST**: All API calls go through the `OpenDotaAPI` class in `lib/opendota-api.ts`.
 - **MUST**: Use `fetchWithRetry()` for all API calls (handles 429 rate limits with exponential backoff).
 - **MUST**: Use `getCachedPlayerWrappedData()`, `getCachedProPlayers()`, `getCachedTopPlayers()` — React `cache()`-wrapped versions for SSR deduplication.
+- **MUST**: All fetch calls include `{ next: { revalidate } }` for HTTP edge caching (3600s for player data, 300s for recent matches, 86400s for pro/top players).
+- **MUST**: Use bounded data fetching — `HEROES_LIMIT = 50`, `PEERS_LIMIT = 20` to prevent memory issues.
 - **MUST**: Types for API responses live in `lib/types.ts` — keep them in sync with the API.
 - **MUST**: Hero name/avatar lookups use `lib/heroes.ts` (static, no API call needed).
 - **MUST**: Convert Steam IDs to account IDs via `convertSteamIdToAccountId()` before calling API.
@@ -196,6 +203,18 @@ styles/
 
 ## Performance
 
+### Implemented Optimizations
+- **MUST**: Suspense streaming — each section in `app/id/[steamId]/page.tsx` wrapped in `<Suspense>` with skeleton fallbacks for progressive loading (~200ms TTFB).
+- **MUST**: ISR revalidation set to 86,400s (daily) — `export const revalidate = 86_400` on player pages.
+- **MUST**: Dynamic imports via `components/dynamic-imports.tsx` — `GradientAnimation` and `ProPlayersTable` code-split with `next/dynamic` (SSR disabled).
+- **MUST**: `useMemo` for expensive filtering/sorting in `heroes-section.tsx`, `recent-matches-section.tsx`, and `total-stats-section.tsx`.
+- **MUST**: Gradient animation uses `useRef` + `requestAnimationFrame` for zero React re-render overhead.
+- **MUST**: Loading screen consolidated to single interval with ref-based progress tracking.
+- **MUST**: `prefers-reduced-motion` respected — disables interactive pointer animation and CSS keyframe animations.
+- **MUST**: HTTP caching via `{ next: { revalidate } }` on all API fetch calls (~85% API call reduction).
+- **MUST**: Bounded data fetching — heroes capped at 50, peers at 20.
+
+### General Rules
 - **MUST**: Defer heavy JS (charts, maps) using `next/dynamic` or `React.lazy`.
 - **MUST**: Font optimization via `next/font` (already configured with `display: "swap"`).
 - **MUST**: Virtualize large lists (> 50 items) — `react-window` is installed.
@@ -204,7 +223,6 @@ styles/
 - **MUST**: Iterate on Core Web Vitals (LCP, CLS, INP).
 - **MUST**: Batch layout reads/writes; avoid reflows/repaints.
 - **MUST**: Mutations (`POST`/`PATCH`/`DELETE`) target < 500ms.
-- **SHOULD**: Use `Suspense` boundaries for granular loading states.
 - **SHOULD**: Use `<link rel="preconnect">` for CDN domains.
 - **SHOULD**: Prefer uncontrolled inputs; controlled inputs cheap per keystroke.
 

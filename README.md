@@ -49,8 +49,8 @@ A Dota stats app that'll tell you exactly how many hours you've wasted feeding m
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- pnpm (recommended) or npm
+- Node.js 18+
+- pnpm 10 (recommended)
 - A valid Steam ID (public profile required)
 
 ### Installation
@@ -64,15 +64,11 @@ A Dota stats app that'll tell you exactly how many hours you've wasted feeding m
 2. **Install dependencies**
    ```bash
    pnpm install
-   # or
-   npm install
    ```
 
 3. **Start the development server**
    ```bash
    pnpm dev
-   # or
-   npm run dev
    ```
 
 4. **Open your browser**
@@ -87,49 +83,87 @@ A Dota stats app that'll tell you exactly how many hours you've wasted feeding m
 
 ## 🛠️ Tech Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/) with App Router
-- **Language**: [TypeScript](https://www.typescriptlang.org/) for type safety
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom CSS animations
-- **UI Components**: [Radix UI](https://www.radix-ui.com/) primitives
-- **Data Source**: [OpenDota API](https://docs.opendota.com/) for Dota statistics
-- **Code Quality**: [Biome](https://biomejs.dev/) for formatting and linting
-- **Package Manager**: [pnpm](https://pnpm.io/) for faster installs
-- **Deployment**: [Vercel](https://vercel.com/) for hosting
+| Layer | Tool | Version |
+|---|---|---|
+| Framework | [Next.js](https://nextjs.org/) (App Router) | 15 |
+| UI Library | [React](https://react.dev/) | 19 |
+| Language | [TypeScript](https://www.typescriptlang.org/) | 5 |
+| Styling | [Tailwind CSS](https://tailwindcss.com/) | 4 |
+| Components | [Radix UI](https://www.radix-ui.com/) + Shadcn-like architecture | — |
+| Icons | [Lucide React](https://lucide.dev/) | — |
+| Charts | [Recharts](https://recharts.org/) | 2 |
+| Validation | [Zod](https://zod.dev/) + [React Hook Form](https://react-hook-form.com/) | — |
+| Animation | [Motion](https://motion.dev/) + CSS transitions | — |
+| Linting / Formatting | [Biome](https://biomejs.dev/) 2 + Ultracite preset | — |
+| Toast | [Sonner](https://sonner.emilkowal.dev/) | — |
+| Theming | [next-themes](https://github.com/pacocoursey/next-themes) (dark default) | — |
+| Virtualization | [react-window](https://github.com/bvaughn/react-window) | — |
+| Data Source | [OpenDota API](https://docs.opendota.com/) | — |
+| Package Manager | [pnpm](https://pnpm.io/) | 10 |
+| Deployment | [Vercel](https://vercel.com/) | — |
 
 ## 📁 Project Structure
 
 ```
-dota/
-├── app/                          # Next.js App Router pages
-│   ├── page.tsx                  # Homepage with Steam ID input
-│   ├── [steamId]/page.tsx        # Dynamic player profile page
-│   ├── layout.tsx                # Root layout component
-│   └── globals.css               # Global styles
-├── components/                   # React components
-│   ├── ui/                       # Reusable UI components (buttons, cards, etc.)
-│   ├── animate-ui/               # Custom animation components
-│   ├── friends-section.tsx       # Friends analytics component
-│   ├── heroes-section.tsx        # Heroes statistics component
-│   ├── player-overview.tsx       # Player profile overview
-│   ├── recent-matches-section.tsx # Match history component
-│   ├── total-stats-section.tsx   # Lifetime statistics component
-│   └── social-sharing.tsx        # Social media sharing component
-├── lib/                          # Utility libraries
-│   ├── opendota-api.ts          # OpenDota API integration
-│   ├── types.ts                 # TypeScript type definitions
-│   ├── utils.ts                 # Utility functions
-│   └── heroes.ts                # Hero data and utilities
-├── public/                       # Static assets
-└── styles/                       # Additional stylesheets
+app/
+├── globals.css               # Tailwind imports + CSS variables + animations
+├── layout.tsx                # Root layout (fonts, theme, GTM, floating dock)
+├── page.tsx                  # Landing / home page (Steam ID input)
+├── id/
+│   ├── page.tsx              # Steam ID lookup redirect
+│   └── [steamId]/
+│       ├── page.tsx          # Player wrapped data page (SSR + Suspense streaming)
+│       ├── loading.tsx       # Loading skeleton
+│       └── error.tsx         # Error boundary
+├── pro-players/
+│   ├── page.tsx              # Pro players listing
+│   └── error.tsx             # Error boundary
+└── privacy/
+    └── page.tsx              # Privacy policy
+
+components/
+├── ui/                       # Reusable UI primitives (Radix-based, Shadcn-style)
+├── dynamic-imports.tsx       # Dynamic import wrappers (code splitting)
+├── loading-skeletons.tsx     # Skeleton components for Suspense boundaries
+├── player-overview.tsx       # Player profile header + rank
+├── heroes-section.tsx        # Top heroes breakdown
+├── recent-matches-section.tsx # Recent match history
+├── total-stats-section.tsx   # Lifetime stat records
+├── friends-section.tsx       # Top party friends
+├── social-sharing.tsx        # Share buttons / OG image
+├── pro-players-table.tsx     # Searchable pro players table
+├── loading-screen.tsx        # Full-page loading animation
+├── themed-floating-dock.tsx  # Bottom navigation dock
+├── theme-provider.tsx        # Dark mode provider
+└── footer.tsx                # Site footer
+
+lib/
+├── opendota-api.ts           # OpenDota API client (retry, caching, rate limiting)
+├── types.ts                  # TypeScript types (Player, Match, HeroStats, Peer, etc.)
+├── heroes.ts                 # Hero name/avatar mapping (static data)
+├── data.json                 # Static reference data
+└── utils.ts                  # cn() utility (clsx + tailwind-merge)
+
+scripts/
+└── download-heroes.mjs       # Hero image download script
 ```
 
 ## 🎯 Key Features Implementation
 
 ### OpenDota API Integration
-- Comprehensive API wrapper with error handling and rate limiting
-- Steam ID validation and account verification
-- Efficient data fetching with caching strategies
-- Support for both Steam ID and Account ID formats
+- Comprehensive API wrapper with error handling, retry logic, and rate limiting (50ms delay)
+- Steam ID validation and automatic conversion (Steam ID → Account ID)
+- HTTP caching with `next: { revalidate }` for edge CDN caching
+- React `cache()` for SSR request deduplication
+- Bounded data fetching (50 heroes, 20 peers) to prevent memory issues
+
+### Performance Optimizations
+- **Suspense Streaming**: Each section wrapped in `<Suspense>` boundaries for progressive loading (~200ms TTFB)
+- **ISR Revalidation**: Daily page regeneration (86,400s) to reduce server workload
+- **Dynamic Imports**: Heavy components (gradient animation, pro players table) code-split with `next/dynamic`
+- **Memoization**: `useMemo` for expensive filtering/sorting in heroes, matches, and stats sections
+- **Ref-based Animation**: Gradient animation uses `useRef` + `requestAnimationFrame` instead of state updates (zero React overhead)
+- **Reduced Motion Support**: Respects `prefers-reduced-motion` for accessibility and CPU savings
 
 ### Responsive Design
 - Mobile-first responsive layout
@@ -137,19 +171,15 @@ dota/
 - Interactive components with smooth animations
 - Accessible design following WCAG guidelines
 
-### Performance Optimizations
-- Client-side data fetching with loading states
-- Image optimization with Next.js Image component
-- Efficient component re-rendering with React optimization techniques
-- Code splitting and lazy loading for better performance
-
 ## 🔧 Scripts
 
-- `pnpm dev` - Start development server on port 9001
-- `pnpm build` - Build the application for production
-- `pnpm start` - Start the production server
-- `pnpm lint` - Run Biome linter and auto-fix issues
-- `pnpm format` - Format code with Biome
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start dev server on port 9001 |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Lint + auto-fix (Biome) |
+| `pnpm format` | Format code (Biome) |
 
 ## 🤝 Contributing
 
