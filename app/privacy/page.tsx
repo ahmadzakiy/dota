@@ -138,12 +138,6 @@ export default function PrivacyPage() {
               </section>
             </CardContent>
           </Card>
-
-          <div className="mt-6 text-center">
-            <Link className="text-muted-foreground underline hover:text-foreground" href="/">
-              ← Back to Dota Wrapped
-            </Link>
-          </div>
         </div>
       </div>
     </div>

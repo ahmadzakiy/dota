@@ -5,6 +5,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev --port 9001",
+    "download-heroes": "node scripts/download-heroes.mjs",
     "format": "biome format --write",
     "lint": "biome lint --write",
     "start": "next start"

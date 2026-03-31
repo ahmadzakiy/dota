@@ -1144,6 +1144,15 @@ export const HEROES: HeroData[] = [
     roles: ["Carry", "Escape", "Disabler"],
     legs: 2,
   },
+  {
+    id: 155,
+    name: "npc_dota_hero_largo",
+    localized_name: "Largo",
+    primary_attr: "str",
+    attack_type: "Melee",
+    roles: ["Durable", "Disabler", "Support"],
+    legs: 2,
+  },
 ]
 
 // Utility functions for working with heroes

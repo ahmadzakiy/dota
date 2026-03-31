@@ -9,16 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    // Enable MCP server for AI-assisted debugging
-    mcpServer: true,
-  },
   headers() {
-    // Different CSP for dev vs production
-    // Dev mode needs 'unsafe-inline' for Next.js hot reloading
-    // Production should use strict CSP without unsafe-inline
-    const isDev = process.env.NODE_ENV === "development"
-
     return [
       {
         source: "/(.*)",

@@ -155,9 +155,9 @@ export class OpenDotaAPI {
     return this.fetchWithRetry(url, 3, { revalidate: 1800 })
   }
 
-  getPlayerHeroes(steamId: string, limit = HEROES_LIMIT): Promise<HeroStats[]> {
+  getPlayerHeroes(steamId: string): Promise<HeroStats[]> {
     const accountId = this.convertSteamIdToAccountId(steamId)
-    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/heroes?limit=${limit}`
+    const url = `${OPENDOTA_BASE_URL}/players/${accountId}/heroes`
     return this.fetchWithRetry(url, 3, { revalidate: 3600 })
   }
 
@@ -324,6 +324,8 @@ export class OpenDotaAPI {
       .sort((a, b) => b.games - a.games)
       .slice(0, MATCH_LIMIT_DISPLAY)
 
+    const sortedHeroes = heroes.sort((a, b) => b.games - a.games).slice(0, HEROES_LIMIT)
+
     let firstMatch = await this.getPlayerFirstMatch(steamId)
 
     if (!firstMatch && allMatches.length > 0) {
@@ -340,7 +342,7 @@ export class OpenDotaAPI {
       totalMatches: winLoss.win + winLoss.lose,
       recentMatches,
       topFriends,
-      heroes,
+      heroes: sortedHeroes,
       records,
       totals,
     }

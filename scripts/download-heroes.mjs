@@ -2,7 +2,11 @@
 /**
  * Download all Dota 2 hero images from Steam CDN to public/heroes/
  *
+ * Hero images are sourced from:
+ * https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/{hero_name}.png
+ *
  * Usage: node scripts/download-heroes.mjs
+ *    or: pnpm download-heroes
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"

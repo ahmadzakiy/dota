@@ -32,6 +32,12 @@ export const metadata: Metadata = {
   keywords: ["Dota 2", "Stats", "Wrapped", "OpenDota", "Dota 2 Stats"],
   robots: "index, follow",
   metadataBase: new URL("https://dotawrapped.com"),
+  icons: {
+    icon: "/favicon.svg",
+  },
+  openGraph: {
+    images: ["/logo.jpeg"],
+  },
 }
 
 export default function RootLayout({
