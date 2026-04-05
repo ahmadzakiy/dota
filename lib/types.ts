@@ -181,6 +181,21 @@ export type WrappedData = {
   rank?: PlayerRank
 }
 
+export type StableProfileData = {
+  player: Player
+  totalMatches: number
+  winLoss: WinLoss
+  heroes: HeroStats[]
+  records: WrappedData["records"]
+  totals: PlayerTotals[]
+  topFriends: Peer[]
+  rank?: PlayerRank
+}
+
+export type RecentMatchesData = {
+  recentMatches: Match[]
+}
+
 export type PlayerTotals = {
   field: string
   n: number
