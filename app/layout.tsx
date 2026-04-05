@@ -2,6 +2,7 @@ import { GoogleTagManager } from "@next/third-parties/google"
 import type { Metadata } from "next"
 import { Bodoni_Moda, Inter, Kode_Mono } from "next/font/google"
 import type React from "react"
+import { FaviconSync } from "@/components/favicon-sync"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemedFloatingDock } from "@/components/themed-floating-dock"
 import { Toaster } from "@/components/ui/sonner"
@@ -33,7 +34,10 @@ export const metadata: Metadata = {
   robots: "index, follow",
   metadataBase: new URL("https://dotawrapped.com"),
   icons: {
-    icon: "/favicon.svg",
+    icon: [
+      { url: "/favicon-light.svg", media: "(prefers-color-scheme: light)" },
+      { url: "/favicon-dark.svg", media: "(prefers-color-scheme: dark)" },
+    ],
   },
   openGraph: {
     images: ["/logo.jpeg"],
@@ -55,6 +59,7 @@ export default function RootLayout({
           <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID} />
         )}
         <ThemeProvider defaultTheme="dark">
+          <FaviconSync />
           {children}
           <ThemedFloatingDock />
           <Toaster position="top-center" richColors />
