@@ -45,6 +45,40 @@ const MILLISECONDS_PER_SECOND = 1000
 const RADIANT_PLAYER_SLOT_THRESHOLD = 128
 
 export class OpenDotaAPI {
+  private async getOptionalData<T>(
+    fetcher: () => Promise<T>,
+    fallback: T,
+    context: string,
+    steamId: string,
+  ): Promise<T> {
+    try {
+      return await fetcher()
+    } catch (error) {
+      // biome-ignore lint/suspicious/noConsole: Runtime logging is needed to diagnose partial OpenDota failures in production.
+      console.error(`OpenDota optional fetch failed for ${context} (${steamId})`, error)
+      return fallback
+    }
+  }
+
+  private normalizeArray<T>(value: T[] | unknown): T[] {
+    return Array.isArray(value) ? value : []
+  }
+
+  private normalizeWinLoss(value: WinLoss | unknown): WinLoss {
+    if (
+      value &&
+      typeof value === "object" &&
+      "win" in value &&
+      "lose" in value &&
+      typeof value.win === "number" &&
+      typeof value.lose === "number"
+    ) {
+      return value
+    }
+
+    return { win: 0, lose: 0 }
+  }
+
   private convertSteamIdToAccountId(steamId: string): string {
     const steamIdNum = BigInt(steamId)
     const STEAM_ID_BASE = BigInt("76561197960265728")
@@ -202,13 +236,19 @@ export class OpenDotaAPI {
   }
 
   async getStableProfileData(steamId: string): Promise<StableProfileData> {
-    const [player, winLoss, heroes, peers, totals] = await Promise.all([
-      this.getPlayer(steamId),
-      this.getPlayerWinLoss(steamId),
-      this.getPlayerHeroes(steamId),
-      this.getPlayerPeers(steamId),
-      this.getPlayerTotals(steamId),
+    const player = await this.getPlayer(steamId)
+
+    const [rawWinLoss, rawHeroes, rawPeers, rawTotals] = await Promise.all([
+      this.getOptionalData(() => this.getPlayerWinLoss(steamId), { win: 0, lose: 0 }, "wl", steamId),
+      this.getOptionalData(() => this.getPlayerHeroes(steamId), [], "heroes", steamId),
+      this.getOptionalData(() => this.getPlayerPeers(steamId), [], "peers", steamId),
+      this.getOptionalData(() => this.getPlayerTotals(steamId), [], "totals", steamId),
     ])
+
+    const winLoss = this.normalizeWinLoss(rawWinLoss)
+    const heroes = this.normalizeArray<HeroStats>(rawHeroes)
+    const peers = this.normalizeArray<Peer>(rawPeers)
+    const totals = this.normalizeArray<PlayerTotal>(rawTotals)
 
     const rank = {
       rank_tier: player.rank_tier,
@@ -230,7 +270,13 @@ export class OpenDotaAPI {
   }
 
   async getRecentMatchesData(steamId: string): Promise<RecentMatchesData> {
-    const recentMatches = await this.getPlayerRecentMatches(steamId)
+    const rawRecentMatches = await this.getOptionalData(
+      () => this.getPlayerRecentMatches(steamId),
+      [],
+      "recentMatches",
+      steamId,
+    )
+    const recentMatches = this.normalizeArray<Match>(rawRecentMatches)
 
     return { recentMatches }
   }
