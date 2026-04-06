@@ -12,13 +12,10 @@ import {
 } from "@/components/ui/card"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import {
-  formatDate,
-  getHeroName,
   getRankIconUrl,
   getRankName,
   getRankStars,
   getRankStarUrl,
-  isWin,
 } from "@/lib/opendota-api"
 import type { WrappedData } from "@/lib/types"
 
@@ -44,38 +41,6 @@ const DECENT_KDA = 1.5
 const MINIMUM_KDA = 1
 const IMMORTAL_RANK_TIER = 8
 const RANK_TIER_DIVISOR = 10
-
-// Helper function to get funny time spent message
-const getTimeSinceFirstMatch = (firstMatchTimestamp: number): string => {
-  const firstMatchDate = new Date(firstMatchTimestamp * MILLISECONDS_TO_SECONDS)
-  const today = new Date()
-  const diffTime = Math.abs(today.getTime() - firstMatchDate.getTime())
-  const diffDays = Math.ceil(diffTime / MILLISECONDS_PER_DAY)
-  const diffYears = Math.floor(diffDays / DAYS_PER_YEAR)
-
-  if (diffYears > 0) {
-    const yearText = diffYears > 1 ? "years" : "year"
-    if (diffYears >= VETERAN_YEARS_THRESHOLD) {
-      return `${diffYears} ${yearText} of your life gone to Dota`
-    }
-    if (diffYears >= EXPERIENCED_YEARS_THRESHOLD) {
-      return `${diffYears} ${yearText} of questionable life choices`
-    }
-    return `${diffYears} ${yearText} of feeding and tears`
-  }
-
-  if (diffDays >= YEAR_IN_DAYS) {
-    return "Almost a year of ruining friendships"
-  }
-  if (diffDays >= LONG_TIME_DAYS) {
-    return `${diffDays} days of avoiding real responsibilities`
-  }
-  if (diffDays >= MONTH_IN_DAYS) {
-    return `${diffDays} days of "just one more game"`
-  }
-
-  return `${diffDays} day${diffDays > 1 ? "s" : ""} of pure addiction`
-}
 
 // Helper function to get funny KDA summary using existing KDA field
 const getKDASummary = (kdaValue: number): string => {
@@ -126,7 +91,6 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* User Profile */}
       <Card className="@container/card">
         <CardHeader>
           <CardDescription className="font-mono tabular-nums">{`ID: ${
@@ -142,16 +106,7 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
             </Avatar>
           </CardAction>
         </CardHeader>
-        <CardContent className="text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Your first match was{" "}
-            {data.firstMatch?.start_time ? formatDate(data.firstMatch.start_time) : "Unknown"}
-          </div>
-          <div className="text-muted-foreground">
-            You picked {data.firstMatch?.hero_id ? getHeroName(data.firstMatch.hero_id) : "Unknown"}{" "}
-            and {data.firstMatch && isWin(data.firstMatch) ? "somehow won" : "got rekt"}
-          </div>
-        </CardContent>
+        <CardContent className="min-h-16 text-sm" />
       </Card>
 
       {/* Win Rate */}
@@ -222,9 +177,6 @@ export function PlayerOverview({ data }: PlayerOverviewProps) {
           </CardAction>
         </CardHeader>
         <CardContent className="flex-col items-start gap-1.5 text-sm">
-          <div className={"line-clamp-1 flex gap-2 font-medium"}>
-            {getTimeSinceFirstMatch(data.firstMatch?.start_time || 0)}
-          </div>
           <div className="text-muted-foreground">
             <HoverCard>
               <HoverCardTrigger asChild>
