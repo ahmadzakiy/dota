@@ -48,9 +48,7 @@ async function StableProfileSections({
         </div>
       </div>
 
-      <Suspense fallback={<TableSkeleton rows={20} />}>
-        <TotalStatsSectionWrapper stableDataPromise={stableDataPromise} />
-      </Suspense>
+      <TotalStatsSectionWrapper stableDataPromise={stableDataPromise} />
     </>
   )
 }

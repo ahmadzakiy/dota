@@ -164,18 +164,6 @@ export type WrappedData = {
   recentMatches: Match[]
   firstMatch?: Match
   heroes: HeroStats[]
-  records: {
-    maxKills: number
-    maxDeaths: number
-    maxAssists: number
-    maxGPM: number
-    maxDuration: number
-    avgKills: number
-    avgDeaths: number
-    avgAssists: number
-    avgGPM: number
-    avgDuration: number
-  }
   totals: PlayerTotals[]
   topFriends: Peer[]
   rank?: PlayerRank
@@ -186,7 +174,6 @@ export type StableProfileData = {
   totalMatches: number
   winLoss: WinLoss
   heroes: HeroStats[]
-  records: WrappedData["records"]
   totals: PlayerTotals[]
   topFriends: Peer[]
   rank?: PlayerRank

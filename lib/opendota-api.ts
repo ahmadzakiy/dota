@@ -30,7 +30,6 @@ const HTTP_TOO_MANY_REQUESTS = 429
 const RETRY_BASE_DELAY_MS = 1000
 
 // Match limits
-const MATCH_LIMIT_RECENT = 100
 const MATCH_LIMIT_TOP_FRIENDS = 3
 const MATCH_LIMIT_DISPLAY = 10
 
@@ -226,7 +225,6 @@ export class OpenDotaAPI {
         .filter((peer) => peer.games >= MATCH_LIMIT_TOP_FRIENDS)
         .sort((a, b) => b.games - a.games)
         .slice(0, MATCH_LIMIT_DISPLAY),
-      records: this.calculateRecordsFromTotals([], totals),
       totals,
     }
   }
@@ -235,50 +233,6 @@ export class OpenDotaAPI {
     const recentMatches = await this.getPlayerRecentMatches(steamId)
 
     return { recentMatches }
-  }
-
-  private calculateRecordsFromTotals(matches: Match[], totals: PlayerTotal[]) {
-    const safeNum = (val: unknown): number => {
-      const num = Number(val)
-      return Number.isNaN(num) || !Number.isFinite(num) ? 0 : num
-    }
-
-    const getTotalValue = (
-      field: string,
-    ): { sum: number; count: number; avg: number; max: number } => {
-      const total = totals.find((t) => t.field === field)
-      if (!total) {
-        return { sum: 0, count: 0, avg: 0, max: 0 }
-      }
-
-      const sum = safeNum(total.sum)
-      const count = safeNum(total.n)
-      const avg = count > 0 ? sum / count : 0
-
-      const matchValues = matches.map((m) => safeNum(m[field as keyof Match])).filter((v) => v > 0)
-      const max = matchValues.length > 0 ? Math.max(...matchValues) : 0
-
-      return { sum, count, avg, max }
-    }
-
-    const kills = getTotalValue("kills")
-    const deaths = getTotalValue("deaths")
-    const assists = getTotalValue("assists")
-    const gpm = getTotalValue("gold_per_min")
-    const duration = getTotalValue("duration")
-
-    return {
-      maxKills: safeNum(kills.max),
-      maxDeaths: safeNum(deaths.max),
-      maxAssists: safeNum(assists.max),
-      maxGPM: safeNum(gpm.max),
-      maxDuration: safeNum(duration.max),
-      avgKills: safeNum(Math.round(kills.avg * 10) / 10),
-      avgDeaths: safeNum(Math.round(deaths.avg * 10) / 10),
-      avgAssists: safeNum(Math.round(assists.avg * 10) / 10),
-      avgGPM: safeNum(Math.round(gpm.avg)),
-      avgDuration: safeNum(Math.round(duration.avg)),
-    }
   }
 }
 
